@@ -59,17 +59,24 @@ public static Trine<ExtNum,ExtNum,ExtNum> get_Trine(ExtNum w)
 			case 1:case 0:
 				{
 				ans.first(new ExtNum(w));
-				ans.second(new ExtNum(ExtNumCalc.E));
-				ans.third(new ExtNum(ExtNumCalc.NULL));
+				//ans.second(new ExtNum(ExtNumCalc.E));
+				//ans.third(new ExtNum(ExtNumCalc.NULL));
+                                ans.second((ExtNumCalc.NULL));
+				ans.third((ExtNumCalc.E));
+                                
 				break;
 				}
 			case 2:
 				{
 				a=w.main().third().chains();
 				b=ExtSInteger.QR(a.first(),a.second());
-				ans.first(new ExtNum(b[0]));
+				//ans.first(new ExtNum(b[0]));
+				//ans.second(new ExtNum(b[1]));
+				//ans.third(new ExtNum(a.second()));
+                                ans.first(new ExtNum(b[0]));
 				ans.second(new ExtNum(b[1]));
 				ans.third(new ExtNum(a.second()));
+                                
 				break;
 				}
 			
@@ -222,6 +229,65 @@ public static ExtNum pow(ExtNum a, ExtNum n,ExtNum epsi, ExtNum xi)//a^n
 		}
 	return a;
 	}
+
+public static ExtNum abs(ExtNum a)
+        {
+        ExtNum ans=null;
+        ExtSInteger esi,esi1;
+        Pair<ExtSInteger,ExtInteger> p;
+        int t;
+        if(a==null)
+            a=ExtNumCalc.NULL;
+        else
+            {
+            a=new ExtNum(a);
+            a.simp();
+            t=a.type();
+            if(t==1)
+                {
+                esi=a.main().second();
+                a=new ExtNum(new ExtInteger(esi.chains()));
+                }
+            else
+                if(t==2)
+                {
+                p=a.main().third().chains();
+                p.first().sign(0);
+                a=new ExtNum(p.first(),p.second());
+                }
+            ans=a;
+            }
+        return ans;
+        }
+    
+    public static Trine<ExtNum,ExtNum,ExtNum> getTrine(ExtNum a)
+            {
+            Trine<ExtNum,ExtNum,ExtNum> ans=new Trine<ExtNum,ExtNum,ExtNum>();
+            ExtNum[] tmp;
+            Pair<ExtSInteger,ExtInteger> p;
+            switch(a.type())
+                {
+                case 0: case 1:
+                        {
+                        ans.first(a);
+                        ans.second(ExtNumCalc.NULL);
+                        ans.third(ExtNumCalc.E);
+                        break;
+                        }
+                case 2:
+                        {
+                        p=a.main().third().chains();
+                        ans.third(new ExtNum(p.second()));
+                        tmp = ExtNumCalc.QR(new ExtNum(p.first()), ans.third());
+                        p=null;
+                        ans.first(tmp[0]);
+                        ans.second(tmp[1]);
+                        break;
+                        }
+                }
+            
+            return ans;
+            }
 
 
 }

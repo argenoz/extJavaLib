@@ -729,11 +729,12 @@ that is why i have to use ExtChar
 */
 public static class ExtChar
 {
+
 protected char c;
 public char charValue(){return this.c;}
 public void charValue(char cc) {this.c=cc;}
 public ExtChar(){this.c=(char)0;}
-public ExtChar(ExtChar w) {this.c=w.charValue();}
+public ExtChar(ExtChar w) {if(w!=null)this.c=w.charValue(); else this.c=(char)0;}
 
 public ExtChar(char cc){this.c=cc;}
 public String toString()

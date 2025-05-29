@@ -1,10 +1,15 @@
 package extJavaLib.extNumLib;
 
+
+import extJavaLib.baseBlockLib.Pair;
+        
 import extJavaLib.extNumLib.ariph.ExtInteger.ExtChar;
 import extJavaLib.extNumLib.ExtNum;
 import extJavaLib.extNumLib.ExtNumCalc;
 import extJavaLib.extNumLib.ariph.*;
 import extJavaLib.extJavaLibExceptions.ExtJavaLibExceptions.AriphmeticalException;
+
+
 
 public final class Ariphmetical {
     private Byte B;//1
@@ -17,6 +22,8 @@ public final class Ariphmetical {
     private ExtNum EN;//8 - unsigned int
                         // 9 - signed int
                         // 10 -- racio
+
+    
     
     public static final Ariphmetical N=new Ariphmetical((byte)0),E=new Ariphmetical((byte)1);
     
@@ -31,6 +38,7 @@ public final class Ariphmetical {
     this.S=null;
     this.C=null;
     this.B=null;
+
     }
     
     public Ariphmetical()
@@ -240,6 +248,10 @@ public final class Ariphmetical {
     else
            if(this.EN!=null)
            ans=8+this.EN.type();
+      /*     else
+               if(FP!=null)
+               ans=11;
+    */
     //else ans=-1;
     return ans;
     }
@@ -1318,6 +1330,7 @@ public final class Ariphmetical {
             en=ExtNumCalc.QR(tmp_ar[0].toExtNum(), tmp_ar[1].toExtNum());
             tmp_ar[0]=new Ariphmetical(en[0]);
             tmp_ar[1]=new Ariphmetical(en[1]);
+            
             break;
             }
         default:
@@ -1494,7 +1507,122 @@ public final class Ariphmetical {
         return ans;
         }
   
+  public static Ariphmetical abs(Ariphmetical ar)
+    {
+    Ariphmetical ans=null;
+    Byte b;
+    ExtChar extC;
+    Short s;
+    Integer i;
+    Long l;
+    Float f;
+    Double d;
+    ExtNum extN;
+    
+    ExtInteger extI;
+    ExtSInteger extSI;
+    Pair<ExtSInteger, ExtInteger> p;
+    
+    if(ar==null)
+        ans=Ariphmetical.N;
+    else
+    if(ar.zero())
+        ans=Ariphmetical.N;
+    else
+    switch(ar.type())
+        {
+        case 1:
+            {
+            b=ar.toByte();
+            if(b<0)
+                b=(byte)(-b);
+            ans=new Ariphmetical(b);
+            break;
+            }
+        case 2:
+            {
+            ans=new Ariphmetical(ar);
+            break;
+            }
+        case 3:
+            {
+            s=ar.toShort();
+            if(s<0)
+                s=(short)(-s);
+            ans=new Ariphmetical(s);
+            break;
+            }
+        case 4:
+            {
+            i=ar.toInteger();
+            if(i<0)
+                i=(int)(-i);
+            ans=new Ariphmetical(i);
+            break;
+            }
+        case 5:
+            {
+            l=ar.toLong();
+            if(l<0)
+                l=(long)(-l);
+            ans=new Ariphmetical(l);
+            break;
+            }
+        case 6:
+            {
+            f=ar.toFloat();
+            if(f<0)
+                f=(float)(-f);
+            ans=new Ariphmetical(f);
+            break;
+            }
+        case 7:
+            {
+            d=ar.toDouble();
+            if(d<0)
+                d=(double)(-d);
+            ans=new Ariphmetical(d);
+            break;
+            }
+        case 8:
+        case 9:
+        case 10:
+            {
+            extN=ar.toExtNum();
+            switch(extN.type())
+                {
+                case 0:
+                    {
+                    break;
+                    }
+                case 1:
+                    {
+                    extSI=extN.main().second();
+                    extSI.sign(0);
+                    extN=new ExtNum(extSI);
+                    break;
+                    }
+                case 2:
+                    {
+                    p=extN.main().third().chains();
+                    p.first().sign(0);
+                    extN=new ExtNum(p.first(),p.second());
+                    break;
+                    }
+                }
+            ans=new Ariphmetical(extN);
+            break;
+            }
+            
+        }
+    
+    
+    return ans;
+    }
   
-    
-    
+ 
+  
+          
+  
+  
 }

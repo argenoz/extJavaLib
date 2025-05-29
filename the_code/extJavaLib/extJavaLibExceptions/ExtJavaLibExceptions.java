@@ -99,7 +99,27 @@ public static class NullArgumentException extends ExtJavaLibBaseException
 
 public static class ExtNumLibExceptions
 	{
-	public static class ExtNumNullPointerException extends ExtJavaLibBaseException
+        
+        public static class ExtNumLibException extends ExtJavaLibBaseException
+                {
+                public ExtNumLibException(String i)
+                        {
+                        super(i);
+                        }
+                
+                public ExtNumLibException(String s, int i)
+                        {
+                        super(s,i);
+                        }
+                
+                public ExtNumLibException()
+                        {
+                        this.error="";
+                        this.n=0;
+                        }
+                }
+        
+        public static class ExtNumNullPointerException extends ExtJavaLibBaseException
 			{
 			public ExtNumNullPointerException()
 				{

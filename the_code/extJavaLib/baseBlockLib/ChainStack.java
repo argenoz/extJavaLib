@@ -11,7 +11,10 @@ import extJavaLib.baseBlockLib.Block;
  */
 public class ChainStack<T> //extends Block <T>
 {
-/**
+    private T t;
+    public T get(){return this.t;}
+    public void set(T tt){this.t=tt;}
+ /**
  * n is "next".
  */
 protected ChainStack<T> n;
@@ -29,5 +32,8 @@ public ChainStack<T> next(){return this.n;}
  * @return 
  */
 public ChainStack<T>next(ChainStack<T>n){this.n=n;return this.n;}
+
+//public T get(return this.t);
+
 }
 

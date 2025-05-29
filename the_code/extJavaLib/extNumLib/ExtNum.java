@@ -10,6 +10,9 @@ import extJavaLib.baseBlockLib.Pair;
 //import  extJavaLib.extStringLib.ExtString.ExtChar;
 
 public class ExtNum {
+    
+    
+    
     protected ExtInteger ei;
     protected ExtSInteger esi;
     protected Racio r;
@@ -137,6 +140,8 @@ public class ExtNum {
     
     public void sign(int s)
     {
+    if(!this.zero())
+    {
     s=s%2;
     switch(this.type())
             {
@@ -144,8 +149,7 @@ public class ExtNum {
             case 1:{this.esi.sign(s); this.simp();break;}
             case 2:{this.r.sign(s);break;}
             }
-
-    
+    }
     }
     
     
@@ -218,7 +222,7 @@ public class ExtNum {
 return otv;
     }//koenc simp
     
-   
+    
     
     /////////////////////////////////////////////////////////////////////////////////
     //opiations
@@ -554,5 +558,6 @@ switch(this.type())
 return ans;
 }
 
+    
 
 }
