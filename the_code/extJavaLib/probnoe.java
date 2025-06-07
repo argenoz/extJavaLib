@@ -9,8 +9,9 @@ import extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.ExtCASDeductionClass;
 import extJavaLib.extNumLib.ExtNum;
 import extJavaLib.extNumLib.ExtNumCalc;
 
+import extJavaLib.extNumLib.ariph.*;
 
-import extJavaLib.extNumLib.ExtPointedNumber.ExtFixedPointNumberClass;
+//import extJavaLib.extNumLib.ExtPointedNumber.ExtFixedPointNumberClass;
 
 
 
@@ -41,12 +42,34 @@ public class probnoe {
     public probnoe(){vsp=123;}
     public static void main(String[]strig___)
     {
+        System.out.print(ExtPointedNumbers.ONE_EXTCHAR.soutput_10()+"___\n");
+        ChainStack<ExtInteger> ewqqwe;
+        ExtPointedNumbers.ExtFixedPointNumberClass qwe;
+        ExtPointedNumbers.ExtFixedPointNumberClass.ExtFixedPointNumber b,a;
+        qwe = new ExtPointedNumbers.ExtFixedPointNumberClass();
+        b = qwe.new ExtFixedPointNumber(ExtPointedNumbers.ONE_EXTCHAR);
+        a = qwe.sum(b,qwe.new ExtFixedPointNumber(new ExtInteger(123)));
+        ewqqwe = b.getMain().second();
+        while(ewqqwe!=null)
+            {
+            System.out.print(ewqqwe.get().soutput_10()+"\n");
+            ewqqwe = ewqqwe.next();
+            }
+        b = a;
+        System.out.print("________________________\n");
+        ewqqwe = b.getMain().second();
+        while(ewqqwe!=null)
+            {
+            System.out.print(ewqqwe.get().soutput_10()+"\n");
+            ewqqwe = ewqqwe.next();
+            }
+        /*
         ExtFixedPointNumberClass bb = new
             ExtFixedPointNumberClass();
         ExtFixedPointNumberClass.ExtFixedPointNumber a,b,c;
         a = bb.new ExtFixedPointNumber(new ExtNum(-123,10));
         System.out.print(a.toExtNum()+"\n");
-        
+        */
         
         /*
         System.out.print(extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.FixedPointNumberClass.OneExtChar+"\n\n");

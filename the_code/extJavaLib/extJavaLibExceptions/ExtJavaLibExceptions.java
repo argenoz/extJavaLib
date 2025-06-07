@@ -1,8 +1,7 @@
 
 
 package extJavaLib.extJavaLibExceptions;
-import extJavaLib.extNumLib.ExtNum;
-import java.lang.Exception;
+import java.lang.RuntimeException;
 
 public class ExtJavaLibExceptions
 {
@@ -15,7 +14,11 @@ public class ExtJavaLibExceptions
     }
     
     
-    
+    public final static class ExtPointedNumbersException extends EJLBE
+    {
+        public ExtPointedNumbersException(){super();}
+        public ExtPointedNumbersException(String e){super(e);}
+    }
     
     
 public static class ExtJavaLibNatException extends EJLBE
