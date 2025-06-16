@@ -307,7 +307,153 @@ public class ExtSpecifyNumbers {
             return ans;
             }
         
-         
+        public ExtFixedLenghtIntegerNumber sum(ExtFixedLenghtIntegerNumber a , ExtFixedLenghtIntegerNumber b)
+            {
+            ChainStack<ExtInteger> sa,sb,st1,ans_st;
+            ExtInteger[] tmp;
+            if(this.ifCorrect(a, b))
+                {
+                    sa = a.to_ChainStack();
+                    sb = b.to_ChainStack();
+                    a = null;
+                    b = null;
+                    ans_st = sa;
+                    sa.get().add(sb.get());
+                    tmp = ExtInteger.QR(sa.get(), ExtFixedLenghtIntegerNumbersClass.this.baze);
+                    sa.set(tmp[1]);
+                    sa = sa.next();
+                    sb = sb.next();
+                    //st1 = sa;
+                    //st2 = sb;
+                    while(sa!=null)
+                        if(tmp[0].zero()==0)
+                            {
+                            sa.get().add(sb.get());
+                            tmp = ExtInteger.QR(sa.get(), ExtFixedLenghtIntegerNumbersClass.this.baze);
+                            sa.set(tmp[1]);
+                            sa = sa.next();
+                            sb = sb.next();
+                            //st1 = sa;
+                            //st2 = sb;
+                            }
+                        else
+                            {
+                            st1 = sa;
+                            while(st1!=null)
+                                {
+                                st1.get().add(tmp[0]);
+                                tmp = ExtInteger.QR(st1.get(), ExtFixedLenghtIntegerNumbersClass.this.baze);
+                                st1.set(tmp[1]);
+                                if(tmp[0].zero()==0){ st1 = null; break;}
+                                else
+                                st1 = st1.next();
+                                }
+                            }
+                    
+                    a = this.new ExtFixedLenghtIntegerNumber(ans_st);
+                }
+            else
+                throw ExtSpecifyNumbers.except(1);
+            
+            /*    
+            ExtInteger i_tmp;
+            if(this.ifCorrect(a, b))
+                {
+                i_tmp = a.to_ExtInteger();
+                i_tmp.add(b.to_ExtInteger());
+                a = this.new ExtFixedLenghtIntegerNumber(i_tmp);
+                }
+            else
+                throw ExtSpecifyNumbers.except(1);
+            */
+            return a;
+            }
+        
+        public ExtFixedLenghtIntegerNumber sub(ExtFixedLenghtIntegerNumber a , ExtFixedLenghtIntegerNumber b)
+            {
+            ChainStack<ExtInteger> st,st_tmp;
+            ExtInteger tmp;
+            if(this.ifCorrect(a, b))
+                {
+                    /*
+                   st = b.to_ChainStack();
+                   st_tmp = st;
+                   while(st_tmp!=null)
+                    {
+                        if(st_tmp.get().zero()!=0)
+                            {
+                            tmp = new ExtInteger(ExtFixedLenghtIntegerNumbersClass.this.baze);
+                            tmp.sub(st_tmp.get());
+                            st_tmp.set(tmp);
+                            }
+                        st_tmp = st_tmp.next();
+                    }
+                   b = this.new ExtFixedLenghtIntegerNumber(st);
+                   a = this.sum(a, b);
+                   */
+                   b = this.invert(b);
+                   a = this.sum(a, b);
+                }
+            else
+                throw ExtSpecifyNumbers.except(1);
+            return a;
+            }
+        
+        public ExtFixedLenghtIntegerNumber invert(ExtFixedLenghtIntegerNumber a )
+            {
+            ChainStack<ExtInteger> st,st_tmp;
+            Pair<ExtInteger,ExtInteger> pa;
+            ExtInteger tmp,bz;
+            if(this!=a.get_Domain())
+               throw ExtSpecifyNumbers.except(1);
+            pa = a.get_Domain().getAll();
+            
+            if(this.baze.srav(pa.first())==0 && this.lenght.srav(pa.second())==0 )
+                {
+                   st = a.to_ChainStack();
+                   st_tmp = st;
+                   bz = new ExtInteger(ExtFixedLenghtIntegerNumbersClass.this.baze);
+                   bz.sub(ExtSpecifyNumbers.UNITY);
+                   while(st_tmp!=null)
+                    {
+                        tmp = new ExtInteger(bz);
+                        tmp.sub(st_tmp.get());
+                        st_tmp.set(tmp);
+                        st_tmp = st_tmp.next();
+                        /*
+                        if(st_tmp.get().zero()!=0)
+                            {
+                            tmp = new ExtInteger(ExtFixedLenghtIntegerNumbersClass.this.baze);
+                            tmp.sub(st_tmp.get());
+                            st_tmp.set(tmp);
+                            }
+                        st_tmp = st_tmp.next();
+                        */
+                    }
+                   a = this.new ExtFixedLenghtIntegerNumber(st);
+                   a = this.sum(a, this.new ExtFixedLenghtIntegerNumber(ExtSpecifyNumbers.UNITY));
+                   //a = this.sum(a, b);
+                }
+            else
+                throw ExtSpecifyNumbers.except(1);
+            return a;
+            }
+        
+        
+        public ExtFixedLenghtIntegerNumber prod(ExtFixedLenghtIntegerNumber a , ExtFixedLenghtIntegerNumber b)
+            {
+            ChainStack<ExtInteger> st,st_tmp;
+            ExtInteger tmp;
+            if(this.ifCorrect(a, b))
+                {
+                   tmp = a.to_ExtInteger();
+                   tmp.mul(b.to_ExtInteger());
+                   a = this.new ExtFixedLenghtIntegerNumber(tmp);
+                }
+            else
+                throw ExtSpecifyNumbers.except(1);
+            return a;
+            } 
         
         
         public class ExtFixedLenghtIntegerNumber
@@ -327,6 +473,7 @@ public class ExtSpecifyNumbers {
                     tail.next(new ChainStack<>());
                     tail = tail.next();
                     tail.set(new ExtInteger(tmp.get()));
+                    tmp = tmp.next();
                     }
                 return ans;
                 }
@@ -342,13 +489,12 @@ public class ExtSpecifyNumbers {
                     tmp = new ExtInteger(t.get());
                     tmp.mul(mn);
                     ans.add(tmp);
-                    if(t == null) 
+                    t = t.next();
+                    if(t==null)
                         break;
-                    else 
-                        {
-                            mn.mul(ExtFixedLenghtIntegerNumbersClass.this.baze);
-                            t = t.next();
-                        }
+                    else
+                        mn.mul(ExtFixedLenghtIntegerNumbersClass.this.baze);
+                    
                     }
                 return ans;
                 }
@@ -376,6 +522,63 @@ public class ExtSpecifyNumbers {
                     tmp.set(new ExtInteger());
                     }
                 while(i.srav(ExtSpecifyNumbers.ZERO)!=0);
+                }
+            
+            
+            public ExtFixedLenghtIntegerNumber(ChainStack<ExtInteger> st)
+                {
+                ExtInteger i = new ExtInteger(ExtFixedLenghtIntegerNumbersClass.this.lenght);
+                ChainStack<ExtInteger> s1;
+                if(st==null)
+                    {
+                    this.th = new ChainStack<>();
+                    s1 = this.th;
+                    s1.set(new ExtInteger());
+                    i.sub(ExtSpecifyNumbers.UNITY);
+                    if(i.srav(ExtSpecifyNumbers.ZERO)!=0)
+                    do
+                        {
+                        i.sub(ExtSpecifyNumbers.UNITY);
+                        s1.next(new ChainStack<>());
+                        s1 = s1.next();
+                        s1.set(new ExtInteger());
+                        }
+                    while(i.srav(ExtSpecifyNumbers.ZERO)!=0);
+                    }
+                else
+                    {
+                    this.th = new ChainStack<>();
+                    s1 = this.th;
+                    s1.set(st.get());
+                    st = st.next();
+                    i.sub(ExtSpecifyNumbers.UNITY);
+                    if(i.srav(ExtSpecifyNumbers.ZERO)!=0)
+                    do
+                        if(st!=null)
+                            {
+                            i.sub(ExtSpecifyNumbers.UNITY);
+                            s1.next(new ChainStack<>());
+                            s1 = s1.next();
+                            s1.set(st.get());
+                            st = st.next();
+                            }
+                        else
+                            {
+                                do
+                                    {
+                                      i.sub(ExtSpecifyNumbers.UNITY);
+                                      s1.next(new ChainStack<>());
+                                      s1 = s1.next();
+                                      s1.set(new ExtInteger());
+                                    }
+                                while(i.srav(ExtSpecifyNumbers.ZERO)!=0);
+                                break;
+                            }
+                            
+                    while(i.srav(ExtSpecifyNumbers.ZERO)!=0);
+                    }
+                
+                
                 }
             
             public ExtFixedLenghtIntegerNumber(ExtInteger e)
@@ -435,6 +638,7 @@ public class ExtSpecifyNumbers {
                     
                 }
             
+            public String toString(){return this.to_ExtInteger().soutput_10();}
             
             }
         
