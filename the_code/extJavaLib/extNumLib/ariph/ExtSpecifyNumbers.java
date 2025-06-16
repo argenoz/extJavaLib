@@ -207,13 +207,15 @@ public class ExtSpecifyNumbers {
     
     public static class ExtFixedLenghtIntegerNumbersClass
         {
-        private ExtInteger baze,lenght;
+        private ExtInteger baze,lenght,baze__;
         
         public ExtFixedLenghtIntegerNumbersClass()
             {
-            this.baze = new ExtInteger(ExtSpecifyNumbers.ONE_EXTCHAR);
+            //this.baze = new ExtInteger(ExtSpecifyNumbers.ONE_EXTCHAR);
             //this.lenght = this.baze;
-            this.lenght = new ExtInteger(this.baze);
+            //this.lenght = new ExtInteger(this.baze);
+            //this.baze__ = this.baze.pow(this.lenght);
+            this(ExtSpecifyNumbers.ONE_EXTCHAR,ExtSpecifyNumbers.ONE_EXTCHAR);
             }
         
         public Pair<ExtInteger,ExtInteger> getAll()
@@ -234,6 +236,7 @@ public class ExtSpecifyNumbers {
                 tmp = a.getAll();
                 this.baze = tmp.first();
                 this.lenght = tmp.second();
+                this.baze__ = this.baze.pow(this.lenght);
                 }
             }
         
@@ -252,6 +255,7 @@ public class ExtSpecifyNumbers {
                     {
                     this.baze = new ExtInteger(base);
                     this.lenght = new ExtInteger(len);
+                    this.baze__ = this.baze.pow(this.lenght);
                     }
             }
         
@@ -401,14 +405,40 @@ public class ExtSpecifyNumbers {
         
         public ExtFixedLenghtIntegerNumber invert(ExtFixedLenghtIntegerNumber a )
             {
+            return this.invert_2(a);
+            }
+        
+        private ExtFixedLenghtIntegerNumber invert_1(ExtFixedLenghtIntegerNumber a )
+            {
+            Pair<ExtInteger,ExtInteger> pa;
+            ExtInteger tmp;
+            if(this!=a.get_Domain())
+                {
+                pa = a.get_Domain().getAll();
+                if(this.baze.srav(pa.first())!=0 && this.lenght.srav(pa.second())!=0 )
+                    throw ExtSpecifyNumbers.except(1);
+                }
+            tmp = new ExtInteger(ExtFixedLenghtIntegerNumbersClass.this.baze__);
+            tmp.sub(a.to_ExtInteger());
+            a = this.new ExtFixedLenghtIntegerNumber(tmp);
+            return a;
+            }
+        
+        private ExtFixedLenghtIntegerNumber invert_2(ExtFixedLenghtIntegerNumber a )
+            {
             ChainStack<ExtInteger> st,st_tmp;
             Pair<ExtInteger,ExtInteger> pa;
             ExtInteger tmp,bz;
             if(this!=a.get_Domain())
-               throw ExtSpecifyNumbers.except(1);
-            pa = a.get_Domain().getAll();
+                {
+                pa = a.get_Domain().getAll();
+                if(this.baze.srav(pa.first())!=0 && this.lenght.srav(pa.second())!=0 )
+                    throw ExtSpecifyNumbers.except(1);
+                }
+               
             
-            if(this.baze.srav(pa.first())==0 && this.lenght.srav(pa.second())==0 )
+            
+            //if(this.baze.srav(pa.first())==0 && this.lenght.srav(pa.second())==0 )
                 {
                    st = a.to_ChainStack();
                    st_tmp = st;
@@ -416,10 +446,13 @@ public class ExtSpecifyNumbers {
                    bz.sub(ExtSpecifyNumbers.UNITY);
                    while(st_tmp!=null)
                     {
+                        
                         tmp = new ExtInteger(bz);
                         tmp.sub(st_tmp.get());
                         st_tmp.set(tmp);
                         st_tmp = st_tmp.next();
+                        
+                        
                         /*
                         if(st_tmp.get().zero()!=0)
                             {
@@ -434,8 +467,8 @@ public class ExtSpecifyNumbers {
                    a = this.sum(a, this.new ExtFixedLenghtIntegerNumber(ExtSpecifyNumbers.UNITY));
                    //a = this.sum(a, b);
                 }
-            else
-                throw ExtSpecifyNumbers.except(1);
+            //else
+            //    throw ExtSpecifyNumbers.except(1);
             return a;
             }
         
