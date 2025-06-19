@@ -58,6 +58,7 @@ public class ExtSpecifyNumbers {
        errs[3] = "Lenght(second argument for constructor) must be greater than zero.";
        errs[4] = "Length of integer part(second argument) must be greater than zero.";
        errs[5] = "Length of fractional part(third argument) must be greater than zero.";
+       errs[6] = "Sum of Length of integer part(second argument) and Length of fractional part(third argument) must be greater than zero.";
    }
    
    public static ExtNumLibException except(int i)
@@ -734,17 +735,26 @@ public class ExtSpecifyNumbers {
             
             public ExtFixedPointNumberClass(ExtInteger baze,ExtInteger int_part,ExtInteger frac_part)
                 {
+                ExtInteger tmp;
                 if(baze==null || int_part == null || frac_part == null)
                     throw ExtSpecifyNumbers.except(0);
                 else
                 if(baze.srav(ExtSpecifyNumbers.UNITY)!=1)
                     throw ExtSpecifyNumbers.except(2);
                 else
+                    {
+                      tmp = new ExtInteger(int_part); 
+                      tmp.add(frac_part);
+                      if(tmp.srav(ExtSpecifyNumbers.ZERO)==0)
+                        throw ExtSpecifyNumbers.except(6);
+                        /*
                 if(int_part.srav(ExtSpecifyNumbers.ZERO)==0)
                     throw ExtSpecifyNumbers.except(4);
                 else
                 if(frac_part.srav(ExtSpecifyNumbers.ZERO)==0)
                     throw ExtSpecifyNumbers.except(5);
+                */
+                    }
                 this.len_of_int_part = new ExtInteger(int_part);
                 this.len_of_frac_part = new ExtInteger(frac_part);
                 int_part = new ExtInteger(int_part);
@@ -784,6 +794,93 @@ public class ExtSpecifyNumbers {
                         throw ExtSpecifyNumbers.except(1);
                 return ans;
                 }
+            
+            public ExtFixedPointNumber sub(ExtFixedPointNumber a, ExtFixedPointNumber b)
+                {
+                ExtFixedPointNumber ans;
+                ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber tmp;
+                if(a == null || b == null)
+                    throw ExtSpecifyNumbers.except(0);
+                else
+                    if(this.ifCorrect(a,b))
+                        {
+                        tmp = this.line.sub(
+                                a.to_ExtFixedLenghtIntegerNumber()
+                                , 
+                                b.to_ExtFixedLenghtIntegerNumber()
+                                );
+                        ans = this.new_ExtFixedPointNumber(tmp);
+                        }
+                    else
+                        throw ExtSpecifyNumbers.except(1);
+                return ans;
+                }
+           
+            public ExtFixedPointNumber prod(ExtFixedPointNumber a, ExtFixedPointNumber b)
+                {
+                ExtFixedPointNumber ans;
+                ExtInteger i_tmp,bz;
+                ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber tmp;
+                if(a == null || b == null)
+                    throw ExtSpecifyNumbers.except(0);
+                else
+                    if(this.ifCorrect(a,b))
+                        {
+                        /*
+                        tmp = this.line.prod(
+                                a.to_ExtFixedLenghtIntegerNumber()
+                                , 
+                                b.to_ExtFixedLenghtIntegerNumber()
+                                );
+                        */
+                        bz = a.to_ExtInteger();
+                        bz.mul(b.to_ExtInteger());
+                        i_tmp = this.line.getAll().first();
+                        i_tmp = i_tmp.pow(this.len_of_frac_part);
+                        bz = ExtInteger.QR(bz, i_tmp)[0];
+                        i_tmp = null;
+                        tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
+                        ans = this.new_ExtFixedPointNumber(tmp);
+                        }
+                    else
+                        throw ExtSpecifyNumbers.except(1);
+                return ans;
+                }
+            
+            public ExtFixedPointNumber div(ExtFixedPointNumber a, ExtFixedPointNumber b)
+                {
+                ExtFixedPointNumber ans;
+                ExtInteger i_tmp,bz;
+                ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber tmp;
+                if(a == null || b == null)
+                    throw ExtSpecifyNumbers.except(0);
+                else
+                    if(this.ifCorrect(a,b))
+                        {
+                        /*
+                        tmp = this.line.prod(
+                                a.to_ExtFixedLenghtIntegerNumber()
+                                , 
+                                b.to_ExtFixedLenghtIntegerNumber()
+                                );
+                        */
+                        bz = a.to_ExtInteger();
+                        i_tmp = this.line.getAll().first();
+                        i_tmp = i_tmp.pow(this.len_of_frac_part);
+                        System.out.print(bz.soutput_10()+" ");
+                        bz.mul(i_tmp);
+                        System.out.print(bz.soutput_10()+" ");
+                        i_tmp = null;
+                        bz = ExtInteger.QR(bz, b.to_ExtInteger())[0];
+                        System.out.print(bz.soutput_10()+"\n");
+                        tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
+                        ans = this.new_ExtFixedPointNumber(tmp);
+                        }
+                    else
+                        throw ExtSpecifyNumbers.except(1);
+                return ans;
+                }
+            
             
             private boolean ifCorrect(ExtFixedPointNumber a, ExtFixedPointNumber b)
                 {
@@ -901,6 +998,11 @@ ETTO:               {
                             this.th = ExtFixedPointNumberClass.this.line.new ExtFixedLenghtIntegerNumber(g);
                             }
                     
+                    public boolean ifZero()
+                        {
+                        return (this.th.to_ExtInteger().zero()==0);
+                        }
+                    
                     public ExtFixedPointNumber(ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber a)
                         {
                         if(a==null)
@@ -924,6 +1026,15 @@ ETTO:               {
                         return this.th.to_ExtInteger();
                         }
                     
+                    public String to_String_10()
+                        {
+                        return this.th.to_String_10();
+                        }
+                    
+                    public String to_String_()
+                        {
+                        return this.th.to_String_();
+                        }
                     
                     
                 }
