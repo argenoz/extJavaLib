@@ -867,12 +867,12 @@ public class ExtSpecifyNumbers {
                         bz = a.to_ExtInteger();
                         i_tmp = this.line.getAll().first();
                         i_tmp = i_tmp.pow(this.len_of_frac_part);
-                        System.out.print(bz.soutput_10()+" ");
+                        //System.out.print(bz.soutput_10()+" ");
                         bz.mul(i_tmp);
-                        System.out.print(bz.soutput_10()+" ");
+                        //System.out.print(bz.soutput_10()+" ");
                         i_tmp = null;
                         bz = ExtInteger.QR(bz, b.to_ExtInteger())[0];
-                        System.out.print(bz.soutput_10()+"\n");
+                        //System.out.print(bz.soutput_10()+"\n");
                         tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
                         ans = this.new_ExtFixedPointNumber(tmp);
                         }
@@ -1026,6 +1026,31 @@ ETTO:               {
                         return this.th.to_ExtInteger();
                         }
                     
+                    public Racio to_Racio()
+                        {
+                        Racio ans,r;
+                        ChainStack<ExtInteger> c = this.th.to_ChainStack();
+                        ExtInteger i ,
+                        d,e;
+                        Pair<ExtInteger,Pair<ExtInteger,ExtInteger>> p;
+                        p = this.getDomain().getAll();
+                        ans = new Racio();
+                        e = new ExtInteger(1);
+                        r = new Racio(e,p.first());
+                        while(c!=null)
+                            {
+                            
+                            ans.add(new Racio(c.get()));
+                            ans.mul(r);
+                            c = c.next();
+                            
+                            }
+                        ans.mul(new Racio(p.first().pow(p.second().first())));
+                        p=null;
+                        return ans;
+                        }
+                    
+                    
                     public String to_String_10()
                         {
                         return this.th.to_String_10();
@@ -1034,6 +1059,38 @@ ETTO:               {
                     public String to_String_()
                         {
                         return this.th.to_String_();
+                        }
+                    
+                    public String toString()
+                        {
+                        String ans;
+                        ChainStack<ExtInteger> c;
+                        ExtInteger i;
+                        if(this.getDomain().getAll().first().srav(ExtSpecifyNumbers.DECI)==0)
+                            {
+                            c = this.th.to_ChainStack();
+                            ans = "";
+                            i = this.getDomain().getAll().second().second();
+                            if(i.zero()==0)
+                                i=null;
+                            else i.sub(ExtInteger.E);
+                            while(c!=null)
+                                {
+                                ans = c.get().soutput_10()+ans;
+                                if(i!=null)
+                                    if(i.zero()==0)
+                                        {
+                                        ans = "."+ans;
+                                        i=null;
+                                        }
+                                    else i.sub(ExtInteger.E);
+                                c = c.next();
+                                }
+ 
+                            }
+                            else ans = this.to_String_10();
+                        return ans;
+                        
                         }
                     
                     
