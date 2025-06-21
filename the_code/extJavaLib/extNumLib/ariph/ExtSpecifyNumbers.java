@@ -776,12 +776,14 @@ public class ExtSpecifyNumbers {
             
             public ExtFixedPointNumber sum(ExtFixedPointNumber a, ExtFixedPointNumber b)
                 {
+                int i_cmp;
                 ExtFixedPointNumber ans;
                 ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber tmp;
                 if(a == null || b == null)
                     throw ExtSpecifyNumbers.except(0);
                 else
                     if(this.ifCorrect(a,b))
+                        if((a.sign()+b.sign())%2==0)
                         {
                         tmp = this.line.sum(
                                 a.to_ExtFixedLenghtIntegerNumber()
@@ -789,6 +791,34 @@ public class ExtSpecifyNumbers {
                                 b.to_ExtFixedLenghtIntegerNumber()
                                 );
                         ans = this.new_ExtFixedPointNumber(tmp);
+                        ans.sign(a.sign());
+                        }
+                        else
+                        {
+                        i_cmp = this.cmp(a, b);
+                        if(i_cmp==3)
+                            ans = this.new_ExtFixedPointNumber();
+                        else
+                            if(i_cmp==2)
+                                {
+                                tmp = this.line.sub(
+                                a.to_ExtFixedLenghtIntegerNumber()
+                                , 
+                                b.to_ExtFixedLenghtIntegerNumber()
+                                );
+                                ans = this.new_ExtFixedPointNumber(tmp);
+                                ans.sign(a.sign());
+                                }
+                            else
+                                {
+                                tmp = this.line.sub(
+                                b.to_ExtFixedLenghtIntegerNumber()
+                                , 
+                                a.to_ExtFixedLenghtIntegerNumber()
+                                );
+                                ans = this.new_ExtFixedPointNumber(tmp);
+                                ans.sign(b.sign());
+                                }
                         }
                     else
                         throw ExtSpecifyNumbers.except(1);
@@ -804,12 +834,17 @@ public class ExtSpecifyNumbers {
                 else
                     if(this.ifCorrect(a,b))
                         {
+                        /*
                         tmp = this.line.sub(
                                 a.to_ExtFixedLenghtIntegerNumber()
                                 , 
                                 b.to_ExtFixedLenghtIntegerNumber()
                                 );
-                        ans = this.new_ExtFixedPointNumber(tmp);
+                        */
+                        b = this.new_ExtFixedPointNumber(b);
+                        b.sign((b.sign()+1)%2);
+                        ans=this.sum(a,b);
+                        //ans = this.new_ExtFixedPointNumber(tmp);
                         }
                     else
                         throw ExtSpecifyNumbers.except(1);
@@ -841,6 +876,7 @@ public class ExtSpecifyNumbers {
                         i_tmp = null;
                         tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
                         ans = this.new_ExtFixedPointNumber(tmp);
+                        ans.sign((a.sign()+b.sign())%2);
                         }
                     else
                         throw ExtSpecifyNumbers.except(1);
@@ -875,12 +911,32 @@ public class ExtSpecifyNumbers {
                         //System.out.print(bz.soutput_10()+"\n");
                         tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
                         ans = this.new_ExtFixedPointNumber(tmp);
+                        ans.sign((a.sign()+b.sign())%2);
                         }
                     else
                         throw ExtSpecifyNumbers.except(1);
                 return ans;
                 }
             
+            public int cmp(ExtFixedPointNumber a, ExtFixedPointNumber b)
+                {
+                int ans=0;
+                if(this.ifCorrect(a, b))
+                    {
+                    //ans = a.to_ExtFixedLenghtIntegerNumber().to_ExtInteger().srav(b.to_ExtFixedLenghtIntegerNumber().to_ExtInteger());
+                    ans = a.to_ExtInteger().srav(b.to_ExtInteger());
+                    if(ans==0)
+                        ans = 3;
+                    else
+                        if(ans == 1)
+                            ans = 2;
+                        else
+                            ans =1;
+                    
+                    }
+                else throw ExtSpecifyNumbers.except(1);
+                return ans;
+                }
             
             private boolean ifCorrect(ExtFixedPointNumber a, ExtFixedPointNumber b)
                 {
@@ -965,7 +1021,9 @@ ETTO:               {
                     else
                         p = null;
                     }
-                return this.new_ExtFixedPointNumber(ei.to_ExtInteger());
+                ExtFixedPointNumber ans=this.new_ExtFixedPointNumber(ei.to_ExtInteger());
+                ans.sign(ei.sign());
+                return ans;
                 }
             
             public ExtFixedPointNumber new_ExtFixedPointNumber(ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber ei)
@@ -983,7 +1041,12 @@ ETTO:               {
             
             public class ExtFixedPointNumber
                 {
+                    private int s;
                     private ExtFixedLenghtIntegerNumberClass.ExtFixedLenghtIntegerNumber th;
+                    
+                    public int sign(){return this.s;}
+                    public void sign(int si){this.s=si;}
+                    
                     
                     public ExtFixedPointNumberClass getDomain(){return ExtFixedPointNumberClass.this;}
                     
@@ -995,6 +1058,7 @@ ETTO:               {
                                 throw ExtSpecifyNumbers.except(0);
                             else
                                 g = new ExtInteger(g);
+                            this.sign(0);
                             this.th = ExtFixedPointNumberClass.this.line.new ExtFixedLenghtIntegerNumber(g);
                             }
                     
@@ -1010,6 +1074,7 @@ ETTO:               {
                         else
                         try
                             {
+                            this.sign(0);
                             this.th = ExtFixedPointNumberClass.this.line.new_ExtFixedLenghtIntegerNumber(a);
                             }
                         catch(ExtNumLibException e){ throw ExtSpecifyNumbers.except(e.getI());}
@@ -1039,14 +1104,17 @@ ETTO:               {
                         r = new Racio(e,p.first());
                         while(c!=null)
                             {
-                            
-                            ans.add(new Racio(c.get()));
                             ans.mul(r);
+                            ans.add(new Racio(c.get()));
+                            
                             c = c.next();
                             
                             }
+                        p.second().second(null);
+                        p.second().first().sub(ExtInteger.E);
                         ans.mul(new Racio(p.first().pow(p.second().first())));
                         p=null;
+                        ans.sign(this.sign());
                         return ans;
                         }
                     
@@ -1061,7 +1129,10 @@ ETTO:               {
                         return this.th.to_String_();
                         }
                     
-                    public String toString()
+                    
+                    
+                    
+                    public String toString_lr()
                         {
                         String ans;
                         ChainStack<ExtInteger> c;
@@ -1089,8 +1160,49 @@ ETTO:               {
  
                             }
                             else ans = this.to_String_10();
+                        if(this.sign()==1)
+                            ans = "-"+ans;
                         return ans;
                         
+                        }
+                    
+                    public String toString_rl()
+                        {
+                        String ans;
+                        ChainStack<ExtInteger> c;
+                        ExtInteger i;
+                        if(this.getDomain().getAll().first().srav(ExtSpecifyNumbers.DECI)==0)
+                            {
+                            c = this.th.to_ChainStack();
+                            ans = "";
+                            i = this.getDomain().getAll().second().second();
+                            if(i.zero()==0)
+                                i=null;
+                            else i.sub(ExtInteger.E);
+                            while(c!=null)
+                                {
+                                ans = ans+c.get().soutput_10();
+                                if(i!=null)
+                                    if(i.zero()==0)
+                                        {
+                                        ans = ans+".";
+                                        i=null;
+                                        }
+                                    else i.sub(ExtInteger.E);
+                                c = c.next();
+                                }
+ 
+                            }
+                            else ans = this.to_String_10();
+                        if(this.sign()==1)
+                            ans = "-"+ans;
+                        return ans;
+                        
+                        }
+                    
+                    public String toString()
+                        {
+                        return this.toString_lr();
                         }
                     
                     
