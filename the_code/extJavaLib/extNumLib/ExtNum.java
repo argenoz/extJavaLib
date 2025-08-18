@@ -1,7 +1,6 @@
 
 package extJavaLib.extNumLib;
 
-import extJavaLib.extJavaLibInterfaces.Numerical;
 
 import extJavaLib.extNumLib.ariph.*;
 import extJavaLib.baseBlockLib.Trine;

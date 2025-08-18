@@ -201,6 +201,13 @@ return qew;
 public int sign(){return this.z.sign();}
 public void sign(int s){this.z.sign(s);}
 
+
+/**
+ 
+ * @param a
+ * @param b
+ * @return  3 if a==b, 2 if a>b and 1 if a<b
+ */
 public static int srav(Racio a, Racio b)
 	{
 	int ans=0;
@@ -209,6 +216,8 @@ public static int srav(Racio a, Racio b)
 	a.sub(b);
 	a.simp();
 	vsp=a.chains().first();
+        a = null;
+        b = null;
 	if(vsp.zero()==0)
 		ans=3;
 	else
@@ -316,6 +325,11 @@ a=new Racio(z,new ExtInteger(a.chains().first()));
 this.mul(a);
 }
 
+
+public boolean ifZero()
+    {
+    return ((this.z.zero()==0)||(this.n.zero()==0));
+    }
 
 public void simp()
 {if(n.zero()!=0 && z.zero()!=0){
@@ -470,7 +484,7 @@ public Racio pow(Racio w,Racio epsi)
 
 
 public Racio pow(Racio w, Racio epsi, Racio xi)
-	{
+        {
         Racio ans;
         int i;
         Pair<ExtSInteger,ExtInteger> pair,pair2;
@@ -484,6 +498,7 @@ public Racio pow(Racio w, Racio epsi, Racio xi)
         esi1=pair.first();
 POW_ALL:
         {
+        
         if(this.z.srav(ExtSInteger.N)==3)
             {
             ans=new Racio();
@@ -502,7 +517,7 @@ POW_ALL:
                 }
         else
         if(esi1.srav(ExtSInteger.E_)==0)
-                {
+                {       
                 i=ans.sign();
                 esi1=new ExtSInteger(ans.chains().second().chains());
                 ei1=new ExtSInteger(ans.chains().first().chains());
@@ -514,6 +529,15 @@ POW_ALL:
             {
             ans=ans.pow(esi1);
             }
+        else
+            {
+            //ei1 = pair.second();
+            //if()
+            //System.out.print("*****");
+            }
+        
+        if(pair.second().srav(ExtInteger.E)==0)
+                break POW_ALL;
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

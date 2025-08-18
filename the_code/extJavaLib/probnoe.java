@@ -1,19 +1,18 @@
 package extJavaLib;
 
-import extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.ExtCASNum;
 import extJavaLib.baseBlockLib.*;
 //import extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.ExtCASArray;
-import extJavaLib.extStructLib.ExtVector;
 import extJavaLib.extNumLib.Ariphmetical;
-import extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.ExtCASDeductionClass;
 import extJavaLib.extNumLib.ExtNum;
 import extJavaLib.extNumLib.ExtNumCalc;
 
 import extJavaLib.extNumLib.ariph.*;
-
+import extJavaLib.extNumLib.ariph.ExtSpecifyNumbers.ExtFixedLenghtIntegerNumberClass;
+import extJavaLib.extNumLib.ariph.ExtSpecifyNumbers.ExtFixedPointNumberClass;
+import extJavaLib.extNumLib.ariph.ExtSpecifyNumbers.ExtFloatingPointNumberClass;
 //import extJavaLib.extNumLib.ExtPointedNumber.ExtFixedPointNumberClass;
 
-
+import extJavaLib.extStructLib.BaseExtStruct.*;
 
 public class probnoe {
     
@@ -42,90 +41,33 @@ public class probnoe {
     public probnoe(){vsp=123;}
     public static void main(String[]strig___)
     {
-        System.out.print(ExtPointedNumbers.ONE_EXTCHAR.soutput_10()+"___\n");
-        ChainStack<ExtInteger> ewqqwe;
-        ExtPointedNumbers.ExtFixedPointNumberClass qwe;
-        ExtPointedNumbers.ExtFixedPointNumberClass.ExtFixedPointNumber b,a;
-        qwe = new ExtPointedNumbers.ExtFixedPointNumberClass();
-        b = qwe.new ExtFixedPointNumber(ExtPointedNumbers.ONE_EXTCHAR);
-        a = qwe.sum(b,qwe.new ExtFixedPointNumber(new ExtInteger(123)));
-        ewqqwe = b.getMain().second();
-        while(ewqqwe!=null)
+        ExtArray<Ariphmetical> q;
+        Ariphmetical l = (new Ariphmetical(513)).cast(8),i,r,x,e;
+        e = new Ariphmetical(5);
+        e = e.cast(8);
+        q = new ExtArray(new Ariphmetical(l));
+        r = new Ariphmetical(17);
+        r = r.cast(8);
+        i = l;
+        do
             {
-            System.out.print(ewqqwe.get().soutput_10()+"\n");
-            ewqqwe = ewqqwe.next();
+             x = i;
+             i = Ariphmetical.sub(i,Ariphmetical.E);
+             x = Ariphmetical.pow(x, e);
+             
+             q.set(i, x);
             }
-        b = a;
-        System.out.print("________________________\n");
-        ewqqwe = b.getMain().second();
-        while(ewqqwe!=null)
+            while(!i.zero());
+        i = Ariphmetical.N.cast(8);
+        while(Ariphmetical.cmp(i,l)==1)
             {
-            System.out.print(ewqqwe.get().soutput_10()+"\n");
-            ewqqwe = ewqqwe.next();
+            System.out.print(i+"\t"+q.get(i)+"\n");
+            i = Ariphmetical.sum(i,Ariphmetical.E);
             }
-        /*
-        ExtFixedPointNumberClass bb = new
-            ExtFixedPointNumberClass();
-        ExtFixedPointNumberClass.ExtFixedPointNumber a,b,c;
-        a = bb.new ExtFixedPointNumber(new ExtNum(-123,10));
-        System.out.print(a.toExtNum()+"\n");
-        */
-        
-        /*
-        System.out.print(extJavaLib.extNumLib.ExtCASLib.ExtCASLibBaseTypes.FixedPointNumberClass.OneExtChar+"\n\n");
-        System.exit(0);
-        ExtCASDeductionClass dc=new ExtCASDeductionClass(7);
-        ExtCASDeductionClass.ExtCASDeduction d=dc.new ExtCASDeduction(new ExtCASNum(4));
-        ExtVector<Ariphmetical> tps=d.getTypeRoad();
-        Ariphmetical a,i=Ariphmetical.N,l=tps.len();
-        while(Ariphmetical.cmp(i,l)!=3)
-            {
-            a=tps.get(i);
-            System.out.print(a+"\n");
-            i=Ariphmetical.sum(i,Ariphmetical.E);
-            }
-        System.out.print("______________________________\n");
-        */
-        
-        /*
-        probnoe t=new probnoe();
-        probnoe.nuzhnoe2 e=t.new nuzhnoe2(-213);
-        probnoe.nuzhnoe1 e2;
-        System.out.print(e.get()+"\n");
-        System.out.print((e instanceof probnoe.nuzhnoe2)+"\n");
-        e2=e;
-        System.out.print((e2 instanceof probnoe.nuzhnoe2)+"\n");
-        System.out.print((e2 instanceof probnoe.nuzhnoe1)+"\n");
-        */
-        /*
-        ExtCASNum a,n,res,svn=new ExtCASNum(17),dv=new ExtCASNum(3);
-        ExtCASArray<ExtCASNum> ar;
-        n=new ExtCASNum(10);
-        ar=new ExtCASArray<>(n);
-        a=ExtCASNum.N;
-        while(true)
-            {
-            if(3==ExtCASNum.cmp(a,n)) break;
-            res=new ExtCASNum(a);
-            res=res.toDefaultType();
-            res=ExtCASNum.div(res,svn);
-            res=ExtCASNum.pow(res, dv);
-            System.out.print(res+"**\t");
-            System.out.print("___"+a+"\n");
-            ar.set(a, res);
-            a=ExtCASNum.sum(a, ExtCASNum.E);
-            }
-        
-        System.out.print(ar.get(new ExtCASNum(5)));
-        */
+        i = (new Ariphmetical(54)).cast(8);
+        System.out.print(i+"\t"+q.get(i)+"\n");
         
     }
 }
 
-
-
-interface intir
-    {
-    public int dai();
-    }
 

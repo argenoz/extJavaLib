@@ -413,54 +413,61 @@ public final class Ariphmetical {
     
     public boolean zero()
     {
-    boolean ans;
-    ans=(Ariphmetical.cmp(this, Ariphmetical.N)==3);
-    /*
+    boolean ans=false;
+    //ans=(Ariphmetical.cmp(this, Ariphmetical.N)==3);
+    
     switch(this.type())
         {
         case 1:
             {
-            ans=(this.toByte().byteValue()==0);
+            //ans=(this.toByte().byteValue()==0);
+            ans = this.B==0;
             break;
             }
         case 2:
             {
-            ans=(this.toExtChar().charValue()==0);
+            //ans=(this.toExtChar().charValue()==0);
+            ans = (this.C.charValue()==0);
             break;
             }
         case 3:
             {
-            ans=(this.toShort().shortValue()==0);
+            //ans=(this.toShort().shortValue()==0);
+            ans = this.S == 0;
             break;
             }
         case 4:
             {
-            ans=(this.toInteger().intValue()==0);
+            //ans=(this.toInteger().intValue()==0);
+            ans = this.I==0;
             break;
             }
         case 5:
             {
-            ans=(this.toLong().longValue()==0);
+            //ans=(this.toLong().longValue()==0);
+            ans = this.L == 0;
             break;
             }
         case 6:
             {
-            ans=(this.toFloat().floatValue()==0);
+            //ans=(this.toFloat().floatValue()==0);
+            ans = this.F == 0;
             break;
             }
         case 7:
             {
-            ans=(this.toDouble().doubleValue()==0);
+            //ans=(this.toDouble().doubleValue()==0);
+            ans = this.D==0;
             break;
             }
         case 8: case 9: case 10:
             {
-            ans=this.toExtNum().zero();
-            
+            //ans=this.toExtNum().zero();
+            ans = this.EN.zero();
             break;
             }
         }
-    */
+    /**/
     return ans;    
     }
     

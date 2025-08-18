@@ -4,11 +4,34 @@ import extJavaLib.baseBlockLib.ChainDqueue;
 import extJavaLib.baseBlockLib.Pair;
 //import extJavaLib.extStringLib.ExtString.ExtChar;
 
+
+
+
+/**
+ ExtInteger is long ariphmetic integer.
+It is implementation of natural numbers.
+ */
 public class ExtInteger
 {
 public static final int A= maxi();
 
-public static final ExtInteger E=new ExtInteger(1),AE=new ExtInteger(ExtInteger.maxi()),N=new ExtInteger();
+
+/**
+ Base constants.
+ */
+public static final ExtInteger 
+        /**
+         constant 1
+         */
+        E=new ExtInteger(1),
+        /**
+         it is 2**16
+         */
+        AE=new ExtInteger(ExtInteger.maxi()),
+        /**
+         zero
+         */
+        N=new ExtInteger();
 
 public static int maxi()
 {
@@ -21,15 +44,54 @@ for(pr=0;pr<nuzhn;pr++)
 return otvet;
 }
 
-
+/**
+ the realization of ExtInteger is based on methord of the positional number system with base of 2**16
+ */
 protected ChainDqueue<Base_n> c;
-public ChainDqueue<Base_n> chains(){return this.c;}
+
+
+//public ChainDqueue<Base_n> chains(){return this.c;}
+
+/**
+ It gives number with writing in the positional number system with base of 2**16.
+ * @return ChainDqueue<Base_n>
+ */
+public ChainDqueue<Base_n> chains(){
+    /*
+    ChainDqueue<Base_n> ans,tmp,tail;
+    tmp = this.c;
+    ans = new ChainDqueue<>();
+    ans.set(new Base_n(tmp.get()));
+    tmp = tmp.next();
+    tail = ans;
+    while(tmp!=null)
+        {
+        tail.next(new ChainDqueue<>());
+        tail.next().before(tail);
+        tail = tail.next();
+        tail.set(new Base_n(tmp.get()));
+        tmp = tmp.next();
+        //System.out.print(tmp+"__\n");
+        }
+    return ans;
+    */
+    return this.c;
+
+    }
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ base constructor. the source of zero.
+ */
 public ExtInteger(){ this.c=new ChainDqueue<Base_n>(); this.c.set(new Base_n((char)0)); }
+/**
+ long to ExtInteger. if w<0 it becomes zero;
+ * @param w 
+ */
 public ExtInteger(long w)
 		{
 
@@ -59,19 +121,31 @@ public ExtInteger(long w)
 		}
 		}
 
-
+/**
+ int to ExtInteger. if w<0 it becomes zero;
+ * @param w 
+ */
 public ExtInteger(int w)
 	{
 	this.c=(new ExtInteger((long)w)).chains();       
 	}
+/**
+ char to ExtInteger. 
+ * @param w 
+ */
 public ExtInteger(char w)
 	{
 	this.c=(new ExtInteger((int)w)).chains();
 	}
 
-
+/**
+ Copying constructor
+ * @param w 
+ */
 public ExtInteger(ExtInteger w)
 {
+this.c = w.chains();
+
 ChainDqueue <Base_n> vsp=w.chains(),t=null;;
 this.c=null;
 while(vsp!=null)
@@ -91,6 +165,7 @@ else
 	}
 vsp=vsp.next();
 }
+
 }
 
 
@@ -104,7 +179,10 @@ this.c=new ExtInteger(this).chains();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * add to this ExtInteger w
+ * @param w 
+ */
 public void add(ExtInteger w)
 {
 if(this.zero()==0)
@@ -114,6 +192,7 @@ if(w.zero()!=0){
 //w=new ExtInteger(w);
 ChainDqueue<Base_n> a=(new ExtInteger(this)).chains(), 
 	b=(new ExtInteger(w)).chains(),aa=null,aaa,vsp;
+
 aaa=a;
 int buff;
 vsp=a;
@@ -162,7 +241,10 @@ this.c=vsp;
 
 
 
-
+/**
+ * subs from this w. if w>=this then this becomes zero; 
+ * @param w 
+ */
 public void sub(ExtInteger w)
 {
 if(w==null) w=new ExtInteger();
@@ -230,7 +312,10 @@ public boolean o_z()
 return this.c.next()==null;
 }
 
-
+/**
+ multiply this by w;
+ * @param w 
+ */
 public void mul(ExtInteger w)
 {
 if(  w.zero()==0)
@@ -296,7 +381,10 @@ while(t!=null)
 this.c=otvet.chains();
 }
 }
-
+/**
+ * Other yet implementation of multiplying
+ * @param w 
+ */
 public void mul2(ExtInteger w)
 
 {
@@ -355,7 +443,10 @@ while(t!=null)
 	}
 this.c=otvet.chains();
 }
-
+/**
+ * Other implementation of multiplying
+ * @param w 
+ */
 public void mul1(ExtInteger w)
 {
 ChainDqueue<Base_n> qwe,n1t,t=(new ExtInteger(this)).chains(),
@@ -417,6 +508,10 @@ this.c=otvet.chains();
 //if this == 0 or null
     // then 0
 // else 1
+/**
+ if this zero return int 0
+ * @return 
+ */
 public int zero()
 { int otvet;
 if(this.c==null) otvet= 0;
@@ -424,7 +519,9 @@ else if(this.c.get().charValue()==0 && this.c.next()==null) otvet=0;
 	else otvet=1;
 return otvet;
 }
-/*
+
+
+/**
 this==w -> 0
 this>w ->  1
 this <w-> 2
@@ -450,14 +547,20 @@ else
 return otvet;
 }
 
-
+/**
+ the quotient of division
+ * @param w 
+ */
 public void  quo(ExtInteger w)
 {
 this.c=ExtInteger.QR(this,w)[0].chains();
 //return ExtInteger.QR(this,w)[0].chains();
 //this.c=this.QR(this,w)[0].chains();
 }
-
+/**
+the remainder of the division
+ * @param w 
+ */
 public void rmn(ExtInteger w)
 {
 this.c=ExtInteger.QR(this,w)[1].chains();
@@ -465,7 +568,11 @@ this.c=ExtInteger.QR(this,w)[1].chains();
 //this.c=this.QR(this,w)[1].chains();
 
 }
-
+/**
+ raising this number to a power
+ * @param n
+ * @return result of rising without changing this and n
+ */
 public  ExtInteger pow(ExtInteger n)
 {
     if(n==null) {n=new ExtInteger();}
@@ -545,6 +652,12 @@ else
 return ans;
 }
 
+
+/**
+0 - the quotient of division
+1 - the remainder of the division
+ * @param w 
+ */
 public static ExtInteger[] QR(ExtInteger ss,ExtInteger w)
 {
 ss=new ExtInteger(ss);
@@ -609,7 +722,10 @@ return otvet;
 
 
 
-
+/**
+ it gives string with writing this by system of number of 2**16
+ * @return string with writing this by system of number of 2**16
+ */
 public String soutput_()
 {
 String w=null;
@@ -625,7 +741,10 @@ return w;
 }
 
 
-
+/**
+ it gives string with writing this by system of number of 10
+ * @return string with writing this by system of number of 10
+ */
 public String soutput_10()
 {
 String otv=null,vsps;

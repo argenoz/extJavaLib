@@ -3,7 +3,7 @@ package extJavaLib.extNumLib.ariph;
 import extJavaLib.baseBlockLib.ChainDqueue;
 import extJavaLib.baseBlockLib.ChainStack;
 import extJavaLib.baseBlockLib.Pair;
-//import extJavaLib.baseBlockLib.Trine; 
+import extJavaLib.baseBlockLib.Trine; 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -51,7 +51,7 @@ public class ExtSpecifyNumbers {
        tmp = null;
        ONE_EXTCHAR = ONE_BYTE.pow(BINARY);
        ///////////////////////////////////////////////////
-       errs = new String[10];
+       errs = new String[12];
        errs[0] = "NullPointer argument is forbidden.";
        errs[1] = "Incorrect argument(s).";
        errs[2] = "Base(first argument for constructor) must be greater than 1.";
@@ -59,6 +59,12 @@ public class ExtSpecifyNumbers {
        errs[4] = "Length of integer part(second argument) must be greater than zero.";
        errs[5] = "Length of fractional part(third argument) must be greater than zero.";
        errs[6] = "Sum of Length of integer part(second argument) and Length of fractional part(third argument) must be greater than zero.";
+       errs[7] = "Base (first argument) must be greater than 1.";
+       errs[8] = "Sum of integer part of mantiss and fractional part of mantiss must be greater than zero.";
+       errs[9] = "Length of exponent must be greater than zero.";
+       errs[10] = "NaN can not be converted into Racio";
+       errs[11] = "Infinity can not be converted into Racio";
+       
    }
    
    public static ExtNumLibException except(int i)
@@ -907,6 +913,7 @@ public class ExtSpecifyNumbers {
                         bz.mul(i_tmp);
                         //System.out.print(bz.soutput_10()+" ");
                         i_tmp = null;
+                        
                         bz = ExtInteger.QR(bz, b.to_ExtInteger())[0];
                         //System.out.print(bz.soutput_10()+"\n");
                         tmp = this.line.new_ExtFixedLenghtIntegerNumber(bz);
@@ -1004,7 +1011,7 @@ ETTO:               {
                 try{
                 return this.new ExtFixedPointNumber(ei);
                         }
-                catch(ExtNumLibException e){ throw ExtSpecifyNumbers.except(e.getI());  }
+                catch(ExtNumLibException e){ throw e;  }
                 }
             
             public ExtFixedPointNumber new_ExtFixedPointNumber(ExtFixedPointNumber ei)
@@ -1033,11 +1040,21 @@ ETTO:               {
                 {
                  ans = this.new ExtFixedPointNumber(ei);
                 }
-                catch(ExtNumLibException e){ throw ExtSpecifyNumbers.except(e.getI());}
+                catch(ExtNumLibException e){ throw e;}
                 
                 return ans;
                 } 
             
+            public ExtFixedPointNumber new_ExtFixedPointNumber(Racio r)
+                {
+                try{
+                return this.new ExtFixedPointNumber(r);
+                    }
+                catch(ExtNumLibException e){throw e;}
+                }
+            
+            
+            public Object clone(){return new ExtFixedPointNumberClass(this);}
             
             public class ExtFixedPointNumber
                 {
@@ -1047,6 +1064,8 @@ ETTO:               {
                     public int sign(){return this.s;}
                     public void sign(int si){this.s=si;}
                     
+                    
+                    public Object clone(){return this.getDomain().new_ExtFixedPointNumber(this);}
                     
                     public ExtFixedPointNumberClass getDomain(){return ExtFixedPointNumberClass.this;}
                     
@@ -1059,7 +1078,93 @@ ETTO:               {
                             else
                                 g = new ExtInteger(g);
                             this.sign(0);
-                            this.th = ExtFixedPointNumberClass.this.line.new ExtFixedLenghtIntegerNumber(g);
+                            this.th = ExtFixedPointNumberClass.this.line.new_ExtFixedLenghtIntegerNumber(g);
+                            }
+                    
+                    public ExtFixedPointNumber(Racio g)
+                            {
+                            if(g==null)
+                                throw ExtSpecifyNumbers.except(0);
+                            else
+                                g = new Racio(g);
+                            this.sign(g.sign());
+                            g.sign(0);
+                            this.th = ExtFixedPointNumberClass.this.line.new_ExtFixedLenghtIntegerNumber(this.from_Racio_to_ExtInteger(g));
+                            }
+                    
+                    private  ExtInteger from_Racio_to_ExtInteger(Racio g)
+                            {
+                            int sig;
+                            ExtInteger tmp,baza,e,i,mn,su,zn;
+                            ExtInteger[] d;
+                            Pair<ExtSInteger,ExtInteger> para;
+                            ChainStack<ExtInteger> cs1,cs2;
+                            justOperation op = new justOperation<ExtInteger>()
+                                                {
+                                                public ChainStack<ExtInteger> operate(ChainStack<ExtInteger> cs)
+                                                    {
+                                                    ChainStack<ExtInteger> ans;
+                                                    ExtInteger[] qr = ExtInteger.QR(cs.get(),cs.next().get());
+                                                    ans = new ChainStack<>();
+                                                    ans.next(new ChainStack<>());
+                                                    ans.next().next(new ChainStack<>());
+                                                    ans.set(qr[0]);
+                                                    ans.next().set(qr[1]);
+                                                    ans.next().next().set(new ExtInteger(cs.next().get()));
+                                                    return ans;
+                                                    }
+                                                };
+                            if(g==null)
+                                throw ExtSpecifyNumbers.except(0);
+                            else
+                                g = new Racio(g);
+                            sig = g.sign();
+                            g.sign(0);
+                            para = g.chains();
+                            g = null;
+                            baza = ExtFixedPointNumberClass.this.line.baze;
+                            tmp = new ExtInteger();
+                            e = ExtInteger.E;
+                            cs1 = new ChainStack<>();
+                            cs1.next(new ChainStack<>());
+                            d = ExtInteger.QR(para.first(), para.second());
+                            zn = para.second();
+                            para = null;
+                            if(ExtFixedPointNumberClass.this.len_of_frac_part.zero()!=0)
+                                    if(d[1].zero()!=0)
+                                    {
+                                    cs1.set(d[1]);
+                                    cs1.next().set(new ExtInteger(zn));
+                                    i = new ExtInteger(ExtFixedPointNumberClass.this.len_of_frac_part);
+                                    while(i.zero()!=0)
+                                        {
+                                        i.sub(e);
+                                        tmp.mul(baza);
+                                        cs1.get().mul(baza);
+                                        cs1 = op.operate(cs1);
+                                        tmp.add(cs1.get());
+                                        cs1 = cs1.next();
+                                        }
+                                    }
+                            zn = null;
+                            if(ExtFixedPointNumberClass.this.len_of_int_part.zero()!=0)
+                                if(d[0].zero()!=0)
+                                {
+                                mn = baza.pow(ExtFixedPointNumberClass.this.len_of_frac_part);
+                                i = new ExtInteger(ExtFixedPointNumberClass.this.len_of_int_part);
+                                while(i.zero()!=0)
+                                    {
+                                    i.sub(e);
+                                    d = ExtInteger.QR(d[0],baza);
+                                    su = new ExtInteger(mn);
+                                    su.mul(d[1]);
+                                    tmp.add(su);
+                                    mn.mul(baza);
+                                    }
+                                }
+                            
+                            return tmp;
+                            
                             }
                     
                     public boolean ifZero()
@@ -1077,7 +1182,7 @@ ETTO:               {
                             this.sign(0);
                             this.th = ExtFixedPointNumberClass.this.line.new_ExtFixedLenghtIntegerNumber(a);
                             }
-                        catch(ExtNumLibException e){ throw ExtSpecifyNumbers.except(e.getI());}
+                        catch(ExtNumLibException e){ throw e;}
                         }
                     
                     
@@ -1204,7 +1309,7 @@ ETTO:               {
                         {
                         return this.toString_lr();
                         }
-                    
+                        
                     
                 }
             
@@ -1213,9 +1318,669 @@ ETTO:               {
         
         }
     
-    
-    
-    
+    public static class ExtFloatingPointNumberClass
+        {
+        private static final char[] spec_symbols;
+        private static String spec_symbols_to_String(char a)
+                {
+                String ans;
+                ans = null;
+                switch(a)
+                    {
+                    case 2:{ans="NaN";break;}
+                    case 3:{ans="+inf";break;}
+                    case 4:{ans="-inf";break;}
+                    case 5:{ans="+delta";break;}
+                    case 6:{ans="-delta";break;}
+                    }
+                
+                return ans;
+                }
+        static
+            {
+            spec_symbols = new char[7];
+            spec_symbols[0]=0;//0
+            spec_symbols[1]=1;//R and not 0
+            spec_symbols[2]=2;//NaN
+            spec_symbols[3] = 3;//+infinity
+            spec_symbols[4] = 4; //-infinity
+            spec_symbols[5] = 5; //delta for all x in R x=0 or 0<delta<abs(x)
+                                    // and 0>-delta>-abs(x)
+            spec_symbols[6] = 6;//-delta
+            
+            /*
+            ExtFloatingPointNumberClass || Racio
+                        0               || 0
+                     delta/-delta       || 0
+                     
+            */
+            }
+        
+        
+        private ExtFixedPointNumberClass[] mantiss_and_exp;
+        private ExtInteger M,m,baza,m_;
+        private Racio[] r;
+        public Trine<ExtInteger,Trine<ExtInteger,ExtInteger,ExtInteger>,Racio[]> getAll()
+            {
+            Pair<ExtInteger,Pair<ExtInteger,ExtInteger>>p;
+            Trine<ExtInteger,Trine<ExtInteger,ExtInteger,ExtInteger>,Racio[]> ans;
+            ans = new Trine<ExtInteger,Trine<ExtInteger,ExtInteger,ExtInteger>,Racio[]>();
+            p = this.mantiss_and_exp[0].getAll();
+            ans.first(p.first());
+            ans.second(new Trine<>());
+            ans.second().first(p.second().first());
+            ans.second().second(p.second().second());
+            ans.second().third(this.mantiss_and_exp[1].getAll().second().first());
+            ans.third(new Racio[2]);
+            ans.third()[0]=new Racio(r[0]);
+            ans.third()[1]=new Racio(r[1]);
+            return ans;
+            }
+        
+        public ExtFloatingPointNumberClass(ExtInteger baze, ExtInteger mantiss_int_part,ExtInteger mantiss_frac_part,ExtInteger exp_len)
+            {
+            ExtInteger a,b,c,d;
+            if(baze==null||mantiss_int_part==null||mantiss_frac_part==null||exp_len==null)
+                throw except(0);
+            if(baze.srav(UNITY)!=1)
+                throw except(7);
+            if(mantiss_int_part.zero()==0&&mantiss_frac_part.zero()==0)
+                throw except(8);
+            if(exp_len.zero()==0)
+                throw except(9);
+            this.r= new Racio[2];
+            mantiss_and_exp = new ExtFixedPointNumberClass[2];
+            mantiss_and_exp[0] = new ExtFixedPointNumberClass(baze,mantiss_int_part,mantiss_frac_part);
+            mantiss_and_exp[1] = new ExtFixedPointNumberClass(baze,exp_len,ZERO);
+            baza = new ExtInteger(baze);
+            
+            c = new ExtInteger(mantiss_int_part);
+            a = new ExtInteger(mantiss_frac_part);
+            a.add(c);
+            a = baza.pow(a);
+            a.sub(UNITY);
+            //this.r[3] = new Racio(a);
+            b = baza.pow(exp_len);
+            b.sub(UNITY);
+            //this.r[2] = this.r[3];
+            //this.r[3] = new Racio(baza.pow(b));
+            //this.r[2].mul(this.r[3]);
+            //this.r[3].sign(-1);
+            c = new ExtInteger(mantiss_int_part);
+            c.add(mantiss_frac_part);
+            c.sub(UNITY);
+            b = baze.pow(c);
+            m = b;
+            M = a;
+            c = new ExtInteger(mantiss_frac_part);
+            c = baze.pow(c);
+            m_ = c;
+            
+            this.r[0] = new Racio(m,m_);
+            this.r[1] = new Racio(M,m_);
+            
+            }
+        
+        
+        public ExtFloatingPointNumberClass(ExtFloatingPointNumberClass f)
+            {
+            if(f==null)
+                throw except(0);
+            Pair<ExtInteger,Trine<ExtInteger,ExtInteger,ExtInteger>> al;
+            al = f.getAll();
+            mantiss_and_exp = new ExtFixedPointNumberClass[2];
+            mantiss_and_exp[0] = new ExtFixedPointNumberClass(al.first(),al.second().first(),al.second().second());
+            mantiss_and_exp[1] = new ExtFixedPointNumberClass(al.first(),al.second().third(),ZERO);
+            ExtInteger baze,mantiss_int_part,mantiss_frac_part,b,c,a;
+            baze = al.first();
+            mantiss_int_part = al.second().first();
+            mantiss_frac_part = al.second().second();
+            baza = new ExtInteger(baze);
+            
+            c = new ExtInteger(mantiss_int_part);
+            a = new ExtInteger(mantiss_frac_part);
+            a.add(c);
+            a = baza.pow(a);
+            a.sub(UNITY);
+            //this.r[3] = new Racio(a);
+            b = baza.pow((al.second().third()));
+            b.sub(UNITY);
+            //this.r[2] = new Racio(b);
+            //this.r[2].mul(this.r[3]);
+            //this.r[3] = this.r[2];
+            //this.r[2] = new Racio(b);
+            //this.r[2].sign(1);
+            //this.r[2] = (new Racio(this.baza)).pow(this.r[2]);
+            c = new ExtInteger(mantiss_int_part);
+            c.add(mantiss_frac_part);
+            c.sub(UNITY);
+            b = baze.pow(c);
+            m = b;
+            M = a;
+            c = new ExtInteger(mantiss_frac_part);
+            c = baze.pow(c);
+            m_ = c;
+            
+            this.r[0] = new Racio(m,m_);
+            this.r[1] = new Racio(M,m_);
+            }
+        
+        public boolean ifTheSame(ExtFloatingPointNumberClass c)
+            {
+                boolean ans = false;
+                Pair<ExtInteger,Trine<ExtInteger,ExtInteger,ExtInteger>> pt=null,pc=null;
+                if(c==null) throw except(0);
+                if(this==c) ans = true;
+                else
+                {
+                        pt = this.getAll();
+                        pc = c.getAll();
+                if(pt.first().srav(pc.first())==0)
+                if(pt.second().first().srav(pc.second().first())==0)
+                if(pt.second().second().srav(pc.second().second())==0)
+                if(pt.second().third().srav(pc.second().third())==0)
+                    ans = true;
+                }
+                return ans;
+            }
+        
+        public boolean ifCorrect(ExtFloatingPointNumber n)
+            {
+            if(n==null) throw except(0);
+            return this.ifTheSame(n.getDomain());
+            }
+        
+        
+        
+        @Override
+        public Object clone(){
+            return new ExtFloatingPointNumberClass(this);
+        }
+        
+        public ExtFloatingPointNumber new_ExtFloatingPointNumber()
+            {
+            return this.new ExtFloatingPointNumber();
+            }
+        
+        public ExtFloatingPointNumber new_ExtFloatingPointNumber(ExtFloatingPointNumber a)
+            {
+            ExtFloatingPointNumber ans=null;
+            try
+                {
+                ans = new ExtFloatingPointNumber(a);
+                }
+            catch(ExtNumLibException e){ throw e; }
+            return ans;
+            }
+        
+        public ExtFloatingPointNumber new_ExtFloatingPointNumber(Racio r)
+            {
+            ExtFloatingPointNumber ans=null;
+            try
+                {
+                ans = this.new ExtFloatingPointNumber(r);
+                }
+            catch(ExtNumLibException e){throw e;};
+            
+            return ans;
+            }
+        
+        public ExtFloatingPointNumber new_ExtFloatingPointNumber(char c)
+            {
+            ExtFloatingPointNumber ans = null;
+            try
+                {
+                ans = this.new ExtFloatingPointNumber(c);
+                }
+            catch(ExtNumLibException e){throw e;}
+            return ans;
+            }
+        
+        public  ExtFloatingPointNumber sum(ExtFloatingPointNumber a, ExtFloatingPointNumber b)
+            {
+            ExtFloatingPointNumber ans = null;
+            Pair<ExtFixedPointNumberClass.ExtFixedPointNumber,ExtFixedPointNumberClass.ExtFixedPointNumber> pa,pb;
+            ExtInteger ia,ib,ii;
+            ExtSInteger ea,eb;
+            Racio r;
+            int sa,sb;
+            int i ;
+            char ca,cb;
+            if(a==null || b == null) throw except(0);
+            else
+                if(this.ifCorrect(a)&&this.ifCorrect(b))
+                    {
+                    ca = a.get_spec_symbols();
+                    cb = b.get_spec_symbols();
+                    
+                    if(ca == 1 && cb == 1)
+                        {
+                        
+                        
+                        }
+                    else
+                        if(ca == 0)
+                            if(cb == 0)
+                                ans = this.new_ExtFloatingPointNumber();
+                            else
+                                ans = this.new_ExtFloatingPointNumber(b);
+                        else
+                        if(cb==0)
+                            ans = this.new_ExtFloatingPointNumber(a);
+                        else // a !=0 && b !=0     
+                        if(ca == 2 || cb == 2)
+                            ans = this.new_ExtFloatingPointNumber((char)2);
+                        else
+                        if(ca == 3 || cb == 3)
+                            if(cb==4 || ca == 4)
+                                ans = this.new_ExtFloatingPointNumber((char)2);
+                            else
+                                ans = this.new_ExtFloatingPointNumber((char)3);
+                        else
+                        if(ca == 4 || cb == 4)
+                            ans = this.new_ExtFloatingPointNumber((char)4);
+                        else
+                        if(ca == 5)
+                            if(cb == 5)
+                                ans = this.new_ExtFloatingPointNumber(cb);
+                            else if(cb==6)
+                                ans = this.new_ExtFloatingPointNumber((char)0);
+                            else ans = this.new_ExtFloatingPointNumber(b);
+                        else
+                        if(cb == 5)
+                            if(ca == 5)
+                                ans = this.new_ExtFloatingPointNumber(ca);
+                            else if(ca==6)
+                                ans = this.new_ExtFloatingPointNumber((char)0);
+                            else ans = this.new_ExtFloatingPointNumber(a);
+                        else
+                        if(ca == 6)
+                            if(cb == 6)
+                                ans = this.new_ExtFloatingPointNumber(cb);
+                            else if(cb==5)
+                                ans = this.new_ExtFloatingPointNumber((char)0);
+                            else ans = this.new_ExtFloatingPointNumber(b);
+                        else
+                        if(cb == 6)
+                            if(ca == 6)
+                                ans = this.new_ExtFloatingPointNumber(ca);
+                            else if(ca==5)
+                                ans = this.new_ExtFloatingPointNumber((char)0);
+                            else ans = this.new_ExtFloatingPointNumber(a);
+                        else throw except("Subtypes' exception.");
+                    }
+                else throw except(1);
+            
+            
+            
+            return ans;
+            }
+        
+        
+        public class ExtFloatingPointNumber
+            {
+            private char spec_symbol;
+            public char get_spec_symbols(){return this.spec_symbol;}
+            private ExtFixedPointNumberClass.ExtFixedPointNumber mantiss,exp;
+            private ExtFloatingPointNumberClass domain;
+            public ExtFloatingPointNumberClass getDomain(){return ExtFloatingPointNumberClass.this;}
+            
+            public Pair<ExtFixedPointNumberClass.ExtFixedPointNumber,ExtFixedPointNumberClass.ExtFixedPointNumber> getMain()
+                {
+                Pair<ExtFixedPointNumberClass.ExtFixedPointNumber,ExtFixedPointNumberClass.ExtFixedPointNumber> ans;
+                ans = new Pair<ExtFixedPointNumberClass.ExtFixedPointNumber,ExtFixedPointNumberClass.ExtFixedPointNumber>();
+                ans.first(this.mantiss.getDomain().new_ExtFixedPointNumber(this.mantiss));
+                ans.second(this.exp.getDomain().new_ExtFixedPointNumber(this.exp));
+                return ans;
+                }
+            
+            
+            public int[] sign()
+                {
+                int[] ans = new int[2];
+                ans[0] = this.mantiss.sign();
+                ans[1] = this.exp.sign();
+                return ans;
+                }
+            
+            
+            public ExtFloatingPointNumber()
+                    {
+                    this.domain = ExtFloatingPointNumberClass.this;
+                    mantiss = this.domain.mantiss_and_exp[0].new_ExtFixedPointNumber();
+                    exp = this.domain.mantiss_and_exp[1].new_ExtFixedPointNumber();
+                    this.spec_symbol=0;
+                    }
+            public ExtFloatingPointNumber(char c)
+                    {
+                    this.domain = ExtFloatingPointNumberClass.this;
+                    if(c==1)
+                        except(1);
+                        else this.spec_symbol = c;
+                    
+                    }
+            public ExtFloatingPointNumber(ExtFloatingPointNumber n)
+                    {
+                   
+                    //this();
+                    this.domain = ExtFloatingPointNumberClass.this;
+                     char q;
+                    if(n==null) throw except(0);
+                    else if(!this.domain.ifCorrect(n)) throw except(1);
+                    q = n.get_spec_symbols();
+                    this.spec_symbol = q;
+                    if(q!=0)
+                        if(q==1){
+                    Pair<ExtFixedPointNumberClass.ExtFixedPointNumber,ExtFixedPointNumberClass.ExtFixedPointNumber> p;
+                    p = n.getMain();
+                    this.mantiss = p.first();
+                    this.exp = p.second();
+                        }
+                    }
+            
+            public ExtFloatingPointNumber(Racio r)
+                    {
+                    if(r==null) throw except(0);
+                    ExtFloatingPointNumberClass cls = this.getDomain();
+                    this.domain = cls;
+                    int i;
+                    int sig;
+                    ExtInteger expp;
+                    Racio baz;
+                    if(r.ifZero())
+                        {
+                        this.mantiss = cls.mantiss_and_exp[0].new_ExtFixedPointNumber();
+                        this.exp = cls.mantiss_and_exp[1].new_ExtFixedPointNumber();
+                        }
+                    else
+                        {
+                        
+                        
+                        sig = r.sign();
+                        r = new Racio(r);
+                        r.sign(0);
+                        i = Racio.srav(cls.r[0],r);
+                        switch(i)
+                            {
+                            case 3:
+                                {
+                                r.sign(sig);
+                                this.mantiss = cls.mantiss_and_exp[0].new_ExtFixedPointNumber(r);
+                                this.exp = cls.mantiss_and_exp[1].new_ExtFixedPointNumber();
+                                break;
+                                }
+                            case 2:
+                                {
+                                    
+                                expp = new ExtInteger();
+                                baz = new Racio(cls.baza);
+                                
+                                
+                                while(Racio.srav(cls.r[0],r)==2)
+                                    {
+                                    r.mul(baz);
+                                    expp.add(UNITY);
+                                    }
+                                r.sign(sig);
+                                this.mantiss = cls.mantiss_and_exp[0].new_ExtFixedPointNumber(r);
+                                r = new Racio(expp);
+                                r.sign(1);
+                                this.exp = cls.mantiss_and_exp[1].new_ExtFixedPointNumber(r);
+                                break;
+                                }
+                            case 1:
+                                {
+                                
+                                i = Racio.srav(cls.r[1],r);
+                                switch(i)
+                                    {
+                                    case 2: case 3:
+                                        {
+                                        r.sign(sig);
+                                        this.mantiss = cls.mantiss_and_exp[0].new_ExtFixedPointNumber(r);
+                                        this.exp = cls.mantiss_and_exp[1].new_ExtFixedPointNumber();
+                                        break;
+                                        }
+                                    case 1:
+                                        {
+                                        expp = new ExtInteger();
+                                        baz = new Racio(cls.baza);
+                                        System.out.println(Racio.srav(cls.r[1],r));
+                                        while(Racio.srav(cls.r[1],r)==1)
+                                            {
+                                            r.div(baz);
+                                            expp.add(UNITY);
+                                            }
+                                        r.sign(sig);
+                                        this.mantiss = cls.mantiss_and_exp[0].new_ExtFixedPointNumber(r);
+                                        this.exp = cls.mantiss_and_exp[1].new_ExtFixedPointNumber(new Racio(expp));
+                                        break;
+                                        }
+                                    
+                                    }
+                                //throw new ExtNumLibException("beda!!!");
+                                break;
+                                }
+                            
+                            }
+                        
+                        
+                        }
+                    
+                    
+                    
+                    }
+            
+            public Racio toRacio()
+                    {
+                    Racio ans;
+                    ans = this.exp.to_Racio();
+                    ans = (new Racio(this.domain.baza)).pow(ans);
+                    ans.mul(this.mantiss.to_Racio());
+                    return ans;
+                    }
+            
+            
+            public String toString()
+                    {
+                        
+                    String tmp,ans;/* = ("("+this.mantiss.toString_lr()+")");
+                    ans = ans + "*("+this.domain.baza.soutput_10()+")^"+
+                            "("+this.exp.toString_lr()+")";*/
+                    //return ans;
+                    String sig,ans_mantiss,exp,baza;
+                    
+                    if(this.getDomain().baza.srav(DECI)!=0)
+                        {
+                        ans = "";
+                        
+                        if(this.mantiss.sign()==1) ans = "-";
+                        ans = "("+ans +
+                              this.mantiss.to_Racio().soutput_10() +
+                               ")*["+
+                              this.domain.baza.soutput_10()+
+                                "]^{";
+                        ans_mantiss = ans ;
+                        ans = "";
+                        if(this.exp.sign()==1)
+                            ans = "-";
+                        ans_mantiss = ans_mantiss + ans + this.exp.to_ExtInteger().soutput_10()+"}";
+                        ans = ans_mantiss;
+                        return ans;
+                        }
+                    baza = this.domain.baza.soutput_10();
+                    ans_mantiss = this.mantiss.toString_lr();
+                    
+                    boolean vsp;
+                    int i,j,k,l,t=0;
+                    //ans_mantiss.l
+                    //ans_mantiss.
+                    sig="_";
+                    if(ans_mantiss.charAt(ans_mantiss.length()-1)!=sig.charAt(0))
+                        sig="";
+                    l = ans_mantiss.length();
+                    j=0;
+                    char c;
+                    if(ans_mantiss.charAt(0)!='-')
+                    {i=0;ans="";}
+                    else {i=1; ans="-";}
+                    while(i<l)
+                        {
+                        c = ans_mantiss.charAt(i);
+                        if(c=='.')
+                            {
+                            ans = ans+"0.";
+                            j = ans_mantiss.length();
+                            do
+                                {
+                                j=j-1;
+                                if(j==i) ans=ans+"0";
+                                else
+                                if('0'!=ans_mantiss.charAt(j))
+                                    {
+                                    ans=ans+ans_mantiss.substring(i+1, j+1);
+                                    break;
+                                    }
+                                }
+                            while(j>i);
+                            break;
+                            }
+                        else
+                        if(c!='0')
+                            {
+                            j=i+1;
+                            if(j==l)
+                                 ans = ans + ans_mantiss.substring(i, j);
+                            else
+                            while(j<l)
+                                if(ans_mantiss.charAt(j)!='.')
+                                    if(j<l-1)
+                                    j=j+1;
+                                    else
+                                        {
+                                        ans = ans + ans_mantiss.substring(i, j+1);
+                                        break;
+                                        }
+                                else
+                                    {
+                                    ans = ans + ans_mantiss.substring(i, j);
+                                    i = j;
+                                    j = ans_mantiss.length();
+                                    do
+                                        {
+                                        j=j-1;
+                                        if(j==i) ans = ans+".0";
+                                        else if('0'!=ans_mantiss.charAt(j))
+                                                {
+                                                ans = ans+"." +ans_mantiss.substring(i+1, j+1);
+                                                break;
+                                                }
+                                        }
+                                    while(j>i);
+                                    break;
+                                    }
+                            break;
+                            }
+                        i=i+1;
+                        }
+                    ans = "("+ans+")*["+this.domain.baza.soutput_10()+"]";
+                    tmp = ans;
+                    
+                    ans_mantiss = this.exp.toString_lr();
+                    l = ans_mantiss.length();
+                    j=0;
+                    if(ans_mantiss.charAt(0)!='-')
+                    {i=0;ans="";}
+                    else {i=1; ans="-";}
+                    while(i<l)
+                        {
+                        c = ans_mantiss.charAt(i);
+                        //System.out.print("exp:\t"+c+"\n");
+                        if(c=='.')
+                            {
+                            ans = ans+"0.";
+                            j = ans_mantiss.length();
+                            do
+                                {
+                                j=j-1;
+                                if(j==i) ans=ans+"0";
+                                else
+                                if('0'!=ans_mantiss.charAt(j))
+                                    {
+                                    ans=ans+ans_mantiss.substring(i+1, j+1);
+                                    break;
+                                    }
+                                }
+                            while(j>i);
+                            break;
+                            }
+                        else
+                        if(c!='0')
+                            {
+                             t = 1;   
+                            j=i+1;
+                            if(j==l){
+                                 ans = ans + ans_mantiss.substring(i, j);
+                                 
+                            }
+                            else
+                            {
+                                
+                            while(j<l)
+                                if(ans_mantiss.charAt(j)!='.')
+                                    if(j<l-1)
+                                    j=j+1;
+                                    else
+                                        {
+                                        ans = ans + ans_mantiss.substring(i, j+1);
+                                        break;
+                                        }
+                                else
+                                    {
+                                    ans = ans + ans_mantiss.substring(i, j);
+                                    i = j;
+                                    j = ans_mantiss.length();
+                                    do
+                                        {
+                                        j=j-1;
+                                        if(j==i) ans = ans+".0";
+                                        else if('0'!=ans_mantiss.charAt(j))
+                                                {
+                                                ans = ans+"." +ans_mantiss.substring(i+1, j+1);
+                                                break;
+                                                }
+                                        }
+                                    while(j>i);
+                                    break;
+                                    }
+                                    }
+                            break;
+                            }
+                        i=i+1;
+                        }
+                    if(t==0) ans = "0";
+                    tmp = tmp+"^{"+ans+"}";
+                    ans=tmp;
+                    
+                    
+                    return ans;
+                    }
+            
+            
+            
+            
+            }
+            
+            
+        }
+            
+        
     
     
 }
+
+
+interface justOperation<T>
+    {
+    public ChainStack<T> operate(ChainStack<T> c);
+    }

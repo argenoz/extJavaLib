@@ -74,6 +74,12 @@ public static class ExtJavaLibBaseException extends RuntimeException//Exception
 		System.out.print(this.error+"\n");
 	else System.out.print("NULL Exception\n");
 	}
+        
+        public ExtJavaLibBaseException remake(String s,int i)
+            {
+            return new ExtJavaLibBaseException(s,i);
+            }
+        
 
 }
 
