@@ -2,14 +2,14 @@ package extJavaLib.extStructLib;
 
 import extJavaLib.extJavaLibExceptions.ExtJavaLibExceptions.ExtJavaLibBaseException;
         
-import extJavaLib.baseBlockLib.ChainStack;
-import extJavaLib.baseBlockLib.ChainDqueue;
+//import extJavaLib.baseBlockLib.ChainStack;
+import extJavaLib.baseBlockLib.*;
 
 import extJavaLib.extNumLib.Ariphmetical;
 
 
 
-public class BaseExtStruct
+public class BaseExtStructs
 {
     public static class ExtStack<T>
         {
@@ -358,7 +358,151 @@ public class BaseExtStruct
         
         }
     
-    
+    public static class ExtTuple<T>
+        {
+        private ExtArray<Object> a;
+        private Ariphmetical dims;
+        public ExtTuple()
+            {
+            a = null;
+            }
+        
+        public ExtTuple(ExtArray<Ariphmetical> dim)
+            {
+            Ariphmetical E,i,j,k,dim_size;
+            ChainDqueue<Trine<Ariphmetical,Ariphmetical,ExtArray<Object>>> st,st1;
+            Trine<Ariphmetical,Ariphmetical,ExtArray<Object>> tr;
+            int t;
+            boolean flg = true;
+            if(dim==null)
+                throw new ExtJavaLibBaseException("Null argument is forbidden.");
+            dim_size = dim.len();
+            
+                this.a = null;
+            if(!dim_size.zero())
+                {
+                dims = dim_size;
+                j = Ariphmetical.sub(dims,Ariphmetical.E);
+                i = Ariphmetical.N.cast(8);
+                st = new ChainDqueue<>();
+                st.set(new Trine<>());
+                st.get().first(i);
+                st.get().second(dim.get(i));
+                st.get().third(new ExtArray<>(st.get().second()));
+                while(flg)
+                    {
+                    tr = st.get();
+                    t = Ariphmetical.cmp(tr.first(),tr.second());
+                    if(t == 3 )
+                        if(st.next()!=null)
+                            {
+                            i = Ariphmetical.sum(i,Ariphmetical.E);
+                            a = tr.third();
+                            st = st.next();
+                            tr = st.get();
+                            tr.third().set(tr.first(),a);
+                            a = null;
+                            tr.first(Ariphmetical.sum(tr.first(),Ariphmetical.E));
+                            }
+                        else
+                            {
+                            a = tr.third();
+                            flg = false;
+                            }
+                    else
+                        if(Ariphmetical.cmp(i,j)==3)
+                            if(st.next()!=null)
+                                {
+                                i = Ariphmetical.sub(i,Ariphmetical.E);
+                                a = tr.third();
+                                st = st.next();
+                                tr = st.get();
+                                tr.third().set(tr.first(),a);
+                                a = null;
+                                tr.first(Ariphmetical.sum(tr.first(),Ariphmetical.E));
+                                }
+                            else
+                                {
+                                a = tr.third();
+                                flg = false;
+                                }
+                        else
+                        {
+                        i = Ariphmetical.sum(Ariphmetical.E,i);
+                        if(st.before()==null)
+                            {
+                            
+                            //System.out.print(i+"\n");
+                            st.before(new ChainDqueue<>());
+                            st.before().next(st);
+                            st = st.before();
+                            st.set(new Trine<>());
+                            tr = st.get();
+                            tr.second(dim.get(i));
+                            }
+                        else
+                            {
+                            st = st.before();
+                            tr = st.get();
+                            }
+                        
+                        tr.first(Ariphmetical.N.cast(8));
+                        tr.third(new ExtArray<>(tr.second()));
+                        
+                        
+                        }
+                    
+                    }
+                }
+            }
+        
+            public T get(ExtArray<Ariphmetical> i)
+                {
+                T ans = null;
+                Ariphmetical j,l,k;
+                ExtArray<Object> a = this.a;
+                j = Ariphmetical.N.cast(8);
+                l = i.len();
+                l = Ariphmetical.sub(l,Ariphmetical.E);
+                while(true)
+                    if(Ariphmetical.cmp(j,l)==3)
+                        {
+                        ans =(T) a.get(i.get(j));
+                        break;
+                        }
+                    else
+                        {
+                        a =(ExtArray<Object>) a.get(i.get(j));
+                        j = Ariphmetical.sum(Ariphmetical.E,j);
+                        }
+                    
+                return ans;
+                }
+            
+            public void set(ExtArray<Ariphmetical> i,T t)
+                {
+                Ariphmetical j,l,k;
+                ExtArray<Object> a = this.a;
+                j = Ariphmetical.N.cast(8);
+                l = i.len();
+                l = Ariphmetical.sub(l,Ariphmetical.E);
+                while(true)
+                    if(Ariphmetical.cmp(j,l)==3)
+                        {
+                        //ans =(T) a.get(i.get(j));
+                        a.set(i.get(j),t);
+                        break;
+                        }
+                    else
+                        {
+                        a =(ExtArray<Object>) a.get(i.get(j));
+                        j = Ariphmetical.sum(Ariphmetical.E,j);
+                        }
+                }
+        
+        
+        
+        }
     
     
     
