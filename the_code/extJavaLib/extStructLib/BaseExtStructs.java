@@ -57,6 +57,43 @@ public class BaseExtStructs
             }
         }
     
+    public static class ExtQueue<T> extends ExtStack<T>
+        {
+            ChainStack<T> s_tail;
+            public ExtQueue(){super();}
+            
+            @Override
+            public void push(T t)
+                {
+                if(this.s==null)
+                    {
+                    this.s = this.s_tail = new ChainStack<>();
+                    }
+                else
+                    {
+                    this.s_tail.next(new ChainStack<>());
+                    this.s_tail = this.s_tail.next();
+                    }
+                this.s_tail.set(t);
+                }
+            
+            @Override
+            public T pop()
+                {
+                    //T ans = null;
+                    try
+                        {
+                        return super.pop();
+                        //if(this.s==null)
+                        //this.s_tail = null;
+                        }
+                    catch(ExtJavaLibBaseException e)
+                        {throw e;}
+                    //return ans;
+                }
+        }
+    
+    
     public static class ExtDqueue<T>
         {
         protected ChainDqueue<T> dh,dt;

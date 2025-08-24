@@ -1,7 +1,7 @@
 package extJavaLib.extStructLib;
 
 import extJavaLib.baseBlockLib.ChainStack;
-import extJavaLib.extStructLib.BaseExtStructs.ExtStack;
+import extJavaLib.extStructLib.BaseExtStructs.ExtQueue;
 import extJavaLib.extNumLib.Ariphmetical;
 
 import java.lang.Thread;
@@ -18,15 +18,15 @@ public class EJLThreadPull
     private char actual;
     private Ariphmetical ss;
     //ChainStack<EJLWork> st;
-    ExtStack<EJLWork> st;
+    ExtQueue<EJLWork> st;
     //ChainStack<Thread> stth;
     ChainStack<EJLThread> stth;
     public EJLThreadPull()
             {
             this.actual = 0;
-            this.st = new ExtStack<>();
+            this.st = new ExtQueue<>();
             this.ss = dss;
-            this.stth = null;//new ExtStack<>();
+            this.stth = null;//new ExtQueue<>();
             //throw new ExtJavaLibBaseException("Need an argument");
             }
     
