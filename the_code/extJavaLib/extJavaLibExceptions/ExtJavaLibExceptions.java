@@ -35,6 +35,7 @@ public static class ExtJavaLibBaseException extends RuntimeException//Exception
 	protected String error;
         protected int n;
         protected long err_c;
+        protected Object obj;
         @Override
         public String getMessage()
             {
@@ -48,6 +49,7 @@ public static class ExtJavaLibBaseException extends RuntimeException//Exception
 	public ExtJavaLibBaseException()
 	{
 	this.error=null;
+        obj = null;
 	}
         public ExtJavaLibBaseException(String w)
 	{
@@ -65,7 +67,14 @@ public static class ExtJavaLibBaseException extends RuntimeException//Exception
 	if(this.error==null) return null;
 	else return new String(this.error);
 	}
-        
+        public Object getException()
+            {
+            return this.obj;
+            }
+        public void setException(Object o)
+            {
+            this.obj = o;
+            }
         public int getI(){return this.n;}
 
 	public void print()

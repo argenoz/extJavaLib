@@ -368,24 +368,25 @@ public class BaseExtStructs
                 }
             }
         
+        @Deprecated
         @Override
         public void pushBack(T t)
             {
             throw new ExtJavaLibBaseException("ExtArray has fixed length.");
             }
-        
+        @Deprecated
         @Override
         public void pushFront(T t)
             {
             throw new ExtJavaLibBaseException("ExtArray has fixed length.");
             }
-        
+        @Deprecated
         @Override
         public T popBack()
             {
             throw new ExtJavaLibBaseException("ExtArray has fixed length.");
             }
-        
+        @Deprecated
         @Override
         public T popFront()
             {
@@ -406,91 +407,62 @@ public class BaseExtStructs
         
         public ExtTuple(ExtArray<Ariphmetical> dim)
             {
-            Ariphmetical E,i,j,k,dim_size;
-            ChainDqueue<Trine<Ariphmetical,Ariphmetical,ExtArray<Object>>> st,st1;
-            Trine<Ariphmetical,Ariphmetical,ExtArray<Object>> tr;
+            Ariphmetical q,E,i,j,k,dim_size,N;
+            ChainStack<Pair<Ariphmetical,ExtArray<Object>>> st,st1;
+            Pair<Ariphmetical,ExtArray<Object>> p,p1;
             int t;
-            boolean flg = true;
+           // boolean flg = true;
             if(dim==null)
                 throw new ExtJavaLibBaseException("Null argument is forbidden.");
             dim_size = dim.len();
-            
-                this.a = null;
-            if(!dim_size.zero())
-                {
-                dims = dim_size;
-                j = Ariphmetical.sub(dims,Ariphmetical.E);
-                i = Ariphmetical.N.cast(8);
-                st = new ChainDqueue<>();
-                st.set(new Trine<>());
-                st.get().first(i);
-                st.get().second(dim.get(i));
-                st.get().third(new ExtArray<>(st.get().second()));
-                while(flg)
-                    {
-                    tr = st.get();
-                    t = Ariphmetical.cmp(tr.first(),tr.second());
-                    if(t == 3 )
-                        if(st.next()!=null)
-                            {
-                            i = Ariphmetical.sum(i,Ariphmetical.E);
-                            a = tr.third();
-                            st = st.next();
-                            tr = st.get();
-                            tr.third().set(tr.first(),a);
-                            a = null;
-                            tr.first(Ariphmetical.sum(tr.first(),Ariphmetical.E));
-                            }
+            E = Ariphmetical.E.cast(8);
+            N = Ariphmetical.N.cast(8);
+            i=N;
+            st = new ChainStack<>();
+            st.set(new Pair<>());
+            st.get().first(N);
+            st.get().second(new ExtArray<>(dim.get(i)));
+            q = Ariphmetical.sub(dim_size,E);
+            this.dims = dim_size;
+            while(true)
+                if(Ariphmetical.cmp(i,q)==3)
+                    if(st.next()==null)
+                        break;
+                    else
+                        {
+                        p = st.get();
+                        p1 = (st=st.next()).get();
+                        p1.second().set(p1.first(),p.second());
+                        p1.first(Ariphmetical.sum(p1.first(),E));
+                        i = Ariphmetical.sub(i,E);
+                        p1 = p = null;
+                        }
+                else
+                    if(Ariphmetical.cmp(st.get().first(),dim.get(i))==3)
+                        if(st.next()==null)
+                            break;
                         else
                             {
-                            a = tr.third();
-                            flg = false;
+                            p1 = st.get();
+                            p = (st = st.next()).get();
+                            p.second().set(p.first(),p1.second());
+                            p.first(Ariphmetical.sum(E, p.first()));
+                            p1 = p = null;
+                            i = Ariphmetical.sub(i,E);
                             }
                     else
-                        if(Ariphmetical.cmp(i,j)==3)
-                            if(st.next()!=null)
-                                {
-                                i = Ariphmetical.sub(i,Ariphmetical.E);
-                                a = tr.third();
-                                st = st.next();
-                                tr = st.get();
-                                tr.third().set(tr.first(),a);
-                                a = null;
-                                tr.first(Ariphmetical.sum(tr.first(),Ariphmetical.E));
-                                }
-                            else
-                                {
-                                a = tr.third();
-                                flg = false;
-                                }
-                        else
                         {
-                        i = Ariphmetical.sum(Ariphmetical.E,i);
-                        if(st.before()==null)
-                            {
-                            
-                            //System.out.print(i+"\n");
-                            st.before(new ChainDqueue<>());
-                            st.before().next(st);
-                            st = st.before();
-                            st.set(new Trine<>());
-                            tr = st.get();
-                            tr.second(dim.get(i));
-                            }
-                        else
-                            {
-                            st = st.before();
-                            tr = st.get();
-                            }
-                        
-                        tr.first(Ariphmetical.N.cast(8));
-                        tr.third(new ExtArray<>(tr.second()));
-                        
-                        
+                        st1 = new ChainStack<>();
+                        st1.next(st);
+                        st = st1;
+                        p = new Pair<>();
+                        p.first(N);
+                        i = Ariphmetical.sum(i,E);
+                        p.second(new ExtArray<Object>(dim.get(i)));
+                        st.set(p);
+                        p1 = p = null;
                         }
-                    
-                    }
-                }
+                        this.a = st.get().second();
             }
         
             public T get(ExtArray<Ariphmetical> i)
@@ -524,6 +496,7 @@ public class BaseExtStructs
                 l = i.len();
                 l = Ariphmetical.sub(l,Ariphmetical.E);
                 while(true)
+                    {
                     if(Ariphmetical.cmp(j,l)==3)
                         {
                         //ans =(T) a.get(i.get(j));
@@ -535,6 +508,7 @@ public class BaseExtStructs
                         a =(ExtArray<Object>) a.get(i.get(j));
                         j = Ariphmetical.sum(Ariphmetical.E,j);
                         }
+                    }
                 }
         
         
