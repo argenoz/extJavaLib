@@ -380,7 +380,20 @@ else
     }
 }
 
+
 public Racio pow(ExtInteger w)
+    {
+    Racio ans = null;
+    if(w.zero()==0)
+        ans = new Racio(1);
+    else
+        ans = new Racio(this.z.pow(w),this.n.pow(w));
+    
+    
+    return ans;
+    }
+
+public Racio poww(ExtInteger w)
 	{
 	ChainDqueue<Trine<ExtInteger,ExtInteger, Racio>> v1,v2,v3,v4;
 	Pair<ExtSInteger,ExtInteger> w1;
@@ -707,5 +720,7 @@ public double to_double()
         return ans;
         }
 
+@Override
+public Racio clone(){return new Racio(this);}
 
 }

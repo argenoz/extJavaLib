@@ -10,6 +10,9 @@ import extJavaLib.baseBlockLib.Trine;
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 import extJavaLib.extJavaLibExceptions.ExtJavaLibExceptions.ExtNumLibExceptions.ExtNumLibException;
+import extJavaLib.extNumLib.Ariphmetical;
+import extJavaLib.extNumLib.ExtNum;
+import extJavaLib.extNumLib.ExtNumCalc;
 
 
 public class ExtSpecifyNumbers {
@@ -51,7 +54,7 @@ public class ExtSpecifyNumbers {
        tmp = null;
        ONE_EXTCHAR = ONE_BYTE.pow(BINARY);
        ///////////////////////////////////////////////////
-       errs = new String[12];
+       errs = new String[13];
        errs[0] = "NullPointer argument is forbidden.";
        errs[1] = "Incorrect argument(s).";
        errs[2] = "Base(first argument for constructor) must be greater than 1.";
@@ -64,6 +67,7 @@ public class ExtSpecifyNumbers {
        errs[9] = "Length of exponent must be greater than zero.";
        errs[10] = "NaN can not be converted into Racio";
        errs[11] = "Infinity can not be converted into Racio";
+       errs[12] = "Bad operands subtypes.";
        
    }
    
@@ -268,6 +272,35 @@ public class ExtSpecifyNumbers {
                     this.baze__ = this.baze.pow(this.lenght);
                     }
             }
+        
+        public ExtFixedLenghtIntegerNumberClass(Ariphmetical base_,Ariphmetical len_ )
+            {
+                int tb,tl;
+                if(base_==null || len_==null)
+                throw ExtSpecifyNumbers.except(0);
+                tb = base_.type();
+                tl = len_.type();
+                if(tb>5 && tb !=8 || tl>5 && tl !=8)
+                throw ExtSpecifyNumbers.except(12);
+                
+                ExtInteger base =
+                base_.cast(8).toExtNum().main().first(),
+                        len =
+                len_.cast(8).toExtNum().main().first();
+                if(base.srav(ExtSpecifyNumbers.BINARY)==2)
+                    throw ExtSpecifyNumbers.except(2);
+                else
+                if(len.srav(ExtSpecifyNumbers.ZERO)==0)
+                    throw ExtSpecifyNumbers.except(3);
+                else
+                    {
+                    this.baze = new ExtInteger(base);
+                    this.lenght = new ExtInteger(len);
+                    this.baze__ = this.baze.pow(this.lenght);
+                    }
+            }
+        
+        
         
         
         public ExtFixedLenghtIntegerNumber new_ExtFixedLenghtIntegerNumber()

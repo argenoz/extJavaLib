@@ -25,7 +25,16 @@ public final class Ariphmetical {
 
     
     
-    public static final Ariphmetical N=new Ariphmetical((byte)0),E=new Ariphmetical((byte)1);
+    public static final Ariphmetical N,E,N8,E8;
+    
+    static
+        {
+        N = new Ariphmetical((byte)0);
+        E = new Ariphmetical((byte)1);
+        E8 = E.cast(8);
+        N8 = N.cast(8);
+        }
+    
     
     private void nullify()
     {
@@ -1352,8 +1361,8 @@ public final class Ariphmetical {
      return tmp_ar;
     }
     /**
-     * if i1>i2 - > 2
-     * if i1<i2 -> 1
+     * if i1&gti2 - > 2
+     * if i1&lti2 -> 1
      * if i1==i2 -> 3
      * @param i1
      * @param i2
@@ -1628,7 +1637,7 @@ public final class Ariphmetical {
     }
   
  
-  
+public Ariphmetical clone(){return new Ariphmetical(this);}  
           
   
   

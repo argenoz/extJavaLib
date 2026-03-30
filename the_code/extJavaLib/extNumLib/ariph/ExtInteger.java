@@ -568,12 +568,59 @@ this.c=ExtInteger.QR(this,w)[1].chains();
 //this.c=this.QR(this,w)[1].chains();
 
 }
+
+
+
 /**
  raising this number to a power
  * @param n
  * @return result of rising without changing this and n
  */
-public  ExtInteger pow(ExtInteger n)
+public ExtInteger pow(ExtInteger n)
+    {
+    if(n==null) {n=new ExtInteger();}
+    else
+        if(ExtInteger.N.srav(n)==0)
+            return new ExtInteger(ExtInteger.E);
+            
+        else
+        if(ExtInteger.E.srav(n)==0)
+            return new ExtInteger(this);
+    //    else
+    n=new ExtInteger(n);
+    int i=0;
+    char ch;
+    ChainDqueue<Base_n> t = n.chains();
+    ExtInteger ans = new ExtInteger(ExtInteger.E),value = new ExtInteger(this);
+    ch=t.get().charValue();
+    while(true)
+        if(i==16)
+            {
+            t = t.next();
+            if(t==null)
+                break;
+            ch = t.get().charValue();
+            i=0;
+            }
+        else
+            {
+            if((ch&1)!=0)
+                ans.mul(value);
+            value.mul(value);
+            i=i+1;
+            //System.out.print(this.soutput_10()+" "+((int)ch)+"**\n");
+            ch = (char)(ch>>1);
+            if(ch==0)
+                if(t.next()==null)
+                    break;
+            }
+    
+    return ans;
+    }
+
+
+
+private  ExtInteger pow_(ExtInteger n)
 {
     if(n==null) {n=new ExtInteger();}
     else n=new ExtInteger(n);
@@ -888,8 +935,8 @@ public String toString()
 		}*/
 
 }
-
-
+@Override
+public ExtInteger clone(){return new ExtInteger(this);}
 
 }
 

@@ -556,7 +556,7 @@ switch(this.type())
 
 return ans;
 }
-
-    
+@Override
+public ExtNum clone(){return new ExtNum(this);}    
 
 }

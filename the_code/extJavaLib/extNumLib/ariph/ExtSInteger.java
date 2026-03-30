@@ -280,6 +280,8 @@ if(n.chains().get().charValue()%2==1)
     ans.sign(this.sign());
 return ans;
 }
+@Override
+public ExtSInteger clone(){return new ExtSInteger(this);}
 
 }
 
