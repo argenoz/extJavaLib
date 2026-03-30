@@ -11,6 +11,20 @@ import extJavaLib.extNumLib.Ariphmetical;
 
 public class BaseExtStructs
 {
+    
+    public static class ExtPair<A,B> extends Pair<A,B>
+        {
+        public ExtPair(){super();}
+        
+        }
+    
+    public static class ExtTrine<A,B,C> extends Trine<A,B,C>
+        {
+        public ExtTrine(){super();}
+        
+        }
+    
+    
     public static class ExtStack<T>
         {
         ChainStack<T> s;
@@ -45,7 +59,7 @@ public class BaseExtStructs
         
         public Ariphmetical len()
             {
-            Ariphmetical ans = Ariphmetical.N.cast(8);
+            Ariphmetical ans = Ariphmetical.N8;
             ChainStack<T> ss;
             ss = this.s;
             while(ss!=null)
@@ -138,7 +152,7 @@ public class BaseExtStructs
             {
             T ans = null;
             if(this.dh==null)
-                throw new ExtJavaLibBaseException("ExtDqueue is empty.");
+                throw new ExtJavaLibBaseException("This is empty.");
             else
                 {
                 ans = this.dh.get();
@@ -155,7 +169,7 @@ public class BaseExtStructs
             {
             T ans = null;
             if(this.dh==null)
-                throw new ExtJavaLibBaseException("ExtList is empty.");
+                throw new ExtJavaLibBaseException("This is empty.");
             else
                 {
                 ans = this.dt.get();
@@ -170,7 +184,7 @@ public class BaseExtStructs
         
         public Ariphmetical len()
             {
-            Ariphmetical ans = Ariphmetical.N.cast(8);
+            Ariphmetical ans = Ariphmetical.N8;
             ChainDqueue<T> d;
             d = this.dh;
             while(d!=null)
@@ -194,7 +208,7 @@ public class BaseExtStructs
         public ExtList()
             {
                 super();
-                l=Ariphmetical.N.cast(8);
+                l=Ariphmetical.N8;
             }
         
         @Override
@@ -256,6 +270,76 @@ public class BaseExtStructs
             {
             return new Ariphmetical(this.l);
             }
+        
+        protected ExtJavaLibBaseException ifCorrectIndex(Ariphmetical i)
+            {
+            ExtJavaLibBaseException ex;
+            if(i==null)
+                ex = new ExtJavaLibBaseException("Null argument is forbidden.");
+            else
+            if(i.type()!=8)
+                ex = new ExtJavaLibBaseException("Index must be ExtInteger subtype of Ariphmetical(8).");
+            else
+            if(Ariphmetical.cmp(i,this.l)==1)
+                ex = null;
+            else
+                ex = new ExtJavaLibBaseException("Out of bounds.");
+            return ex;
+            }
+        
+        public T get(Ariphmetical i)
+            {
+            T ans = null;
+            ChainDqueue<T> t;
+            ExtJavaLibBaseException ex;
+            
+            if(this.ifEmpty())
+                ex = new ExtJavaLibBaseException("This is empty.");
+            else
+                ex = ifCorrectIndex(i);
+            if(ex!=null)
+                throw ex;
+            else
+                {
+                t = this.dh;
+                i = new Ariphmetical(i);
+                while(!i.zero())
+                    {
+                    i = Ariphmetical.sub(i,Ariphmetical.E);
+                    t = t.next();
+                    }
+                ans = t.get();
+                }
+            return ans;
+            }
+        
+        public void set(Ariphmetical i,T tt)
+            {
+            ChainDqueue<T> t;
+            ExtJavaLibBaseException ex;
+            
+            if(this.ifEmpty())
+                ex = new ExtJavaLibBaseException("ExtArray is empty.");
+            else
+                ex = ifCorrectIndex(i);
+            if(ex!=null)
+                throw ex;
+            else
+                {
+                t = this.dh;
+                i = new Ariphmetical(i);
+                //this.l = i;
+                //i = Ariphmetical.sub(i, Ariphmetical.E);
+                while(!i.zero())
+                    {
+                    i = Ariphmetical.sub(i,Ariphmetical.E);
+                    t = t.next();
+                    }
+                t.set(tt);
+                }
+            }
+        
+        
         }
     
     public static class ExtArray<T> extends ExtList<T>
@@ -300,73 +384,7 @@ public class BaseExtStructs
             }
         
         
-        private ExtJavaLibBaseException ifCorrectIndex(Ariphmetical i)
-            {
-            ExtJavaLibBaseException ex;
-            if(i==null)
-                ex = new ExtJavaLibBaseException("Null argument is forbidden.");
-            else
-            if(i.type()!=8)
-                ex = new ExtJavaLibBaseException("Index must be ExtInteger subtype of Ariphmetical(8).");
-            else
-            if(Ariphmetical.cmp(i,this.l)==1)
-                ex = null;
-            else
-                ex = new ExtJavaLibBaseException("Out of bounds.");
-            return ex;
-            }
         
-        public T get(Ariphmetical i)
-            {
-            T ans = null;
-            ChainDqueue<T> t;
-            ExtJavaLibBaseException ex;
-            
-            if(this.ifEmpty())
-                ex = new ExtJavaLibBaseException("ExtArray is empty.");
-            else
-                ex = ifCorrectIndex(i);
-            if(ex!=null)
-                throw ex;
-            else
-                {
-                t = this.dh;
-                i = new Ariphmetical(i);
-                while(!i.zero())
-                    {
-                    i = Ariphmetical.sub(i,Ariphmetical.E);
-                    t = t.next();
-                    }
-                ans = t.get();
-                }
-            return ans;
-            }
-        
-        public void set(Ariphmetical i,T tt)
-            {
-            ChainDqueue<T> t;
-            ExtJavaLibBaseException ex;
-            
-            if(this.ifEmpty())
-                ex = new ExtJavaLibBaseException("ExtArray is empty.");
-            else
-                ex = ifCorrectIndex(i);
-            if(ex!=null)
-                throw ex;
-            else
-                {
-                t = this.dh;
-                i = new Ariphmetical(i);
-                //this.l = i;
-                //i = Ariphmetical.sub(i, Ariphmetical.E);
-                while(!i.zero())
-                    {
-                    i = Ariphmetical.sub(i,Ariphmetical.E);
-                    t = t.next();
-                    }
-                t.set(tt);
-                }
-            }
         
         @Deprecated
         @Override
@@ -415,8 +433,8 @@ public class BaseExtStructs
             if(dim==null)
                 throw new ExtJavaLibBaseException("Null argument is forbidden.");
             dim_size = dim.len();
-            E = Ariphmetical.E.cast(8);
-            N = Ariphmetical.N.cast(8);
+            E = Ariphmetical.E8;
+            N = Ariphmetical.N8;
             i=N;
             st = new ChainStack<>();
             st.set(new Pair<>());
@@ -467,48 +485,56 @@ public class BaseExtStructs
         
             public T get(ExtArray<Ariphmetical> i)
                 {
-                T ans = null;
-                Ariphmetical j,l,k;
-                ExtArray<Object> a = this.a;
-                j = Ariphmetical.N.cast(8);
+                //T ans = null;
+                Ariphmetical j,l;
+                ExtArray<Object> a_local = this.a;
+                j = Ariphmetical.N8;
                 l = i.len();
                 l = Ariphmetical.sub(l,Ariphmetical.E);
+                try
+                {
                 while(true)
                     if(Ariphmetical.cmp(j,l)==3)
                         {
-                        ans =(T) a.get(i.get(j));
-                        break;
+                        //ans =(T) a.get(i.get(j));
+                        //return ans;
+                        return (T) a_local.get(i.get(j));
                         }
                     else
                         {
-                        a =(ExtArray<Object>) a.get(i.get(j));
+                        a_local =(ExtArray<Object>) a_local.get(i.get(j));
                         j = Ariphmetical.sum(Ariphmetical.E,j);
                         }
-                    
-                return ans;
+                }
+                catch(ExtJavaLibBaseException e){throw e;}
+                //return ans;
                 }
             
             public void set(ExtArray<Ariphmetical> i,T t)
                 {
-                Ariphmetical j,l,k;
-                ExtArray<Object> a = this.a;
-                j = Ariphmetical.N.cast(8);
+                Ariphmetical j,l;
+                ExtArray<Object> a_local = this.a;
+                j = Ariphmetical.N8;
                 l = i.len();
                 l = Ariphmetical.sub(l,Ariphmetical.E);
+                try
+                {
                 while(true)
                     {
                     if(Ariphmetical.cmp(j,l)==3)
                         {
                         //ans =(T) a.get(i.get(j));
-                        a.set(i.get(j),t);
-                        break;
+                        a_local.set(i.get(j),t);
+                        return;
                         }
                     else
                         {
-                        a =(ExtArray<Object>) a.get(i.get(j));
+                        a_local =(ExtArray<Object>) a_local.get(i.get(j));
                         j = Ariphmetical.sum(Ariphmetical.E,j);
                         }
                     }
+                }
+                catch(ExtJavaLibBaseException e){throw e;}
                 }
         
         

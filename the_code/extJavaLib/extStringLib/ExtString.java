@@ -538,8 +538,8 @@ public boolean empty(){return this.h==null;}
 ///////////////////////////////
 
 		
-	
-
+@Override	
+public ExtString clone(){return new ExtString(this);}
 
 }
 
