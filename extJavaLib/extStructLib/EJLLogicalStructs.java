@@ -42,6 +42,9 @@ public class EJLLogicalStructs
      * realization of JSON in ExtJavaLib
      * EJLJSON has subtypes classes (EJLJSON_sybtypes_classes):
      * 0 - literal(bool or null);
+     *      8 - null
+     *      9 - true
+     *      10 - false
      * 1 - EJLJSON_Number, Ariphmetical (8) @link extJavaLib.extNumLib.Ariphmetical;
      * 2 - EJLJSON_String, ExtString;
      * 3 - EJLJSON_List, ExtList;
@@ -51,21 +54,23 @@ public class EJLLogicalStructs
     public static class EJLJSON
         {
         
+       
+        
         private static final Workable pushnuum;
         static
             {
             pushnuum = new Workable()
                                 {
-                                public ExtPair<Integer,ExtPair<Object,Object>> newPart(Integer i,Object a, Object b)
+                                public ExtPair<Character,ExtPair<Object,Object>> newPart(Character i,Object a, Object b)
                                     {
-                                    ExtPair<Integer,ExtPair<Object,Object>> ans = new ExtPair<Integer,ExtPair<Object,Object>>();
+                                    ExtPair<Character,ExtPair<Object,Object>> ans = new ExtPair<Character,ExtPair<Object,Object>>();
                                     ans.first(i);
                                     ExtPair<Object,Object> vsp = ans.second();
                                     vsp.first(a);
                                     vsp.second(b);
                                     return ans;
                                     }
-                                public ExtStack<ExtPair<Integer,ExtPair<Object,Object>>> push(ExtStack<ExtPair<Integer,ExtPair<Object,Object>>>s,Integer i, Object a, Object b)
+                                public ExtStack<ExtPair<Character,ExtPair<Object,Object>>> push(ExtStack<ExtPair<Character,ExtPair<Object,Object>>>s,Character i, Object a, Object b)
                                     {
                                     s.push(newPart(i,a,b));
                                     return s;
@@ -74,10 +79,11 @@ public class EJLLogicalStructs
             
             }
         
-        public static char cmp(EJLJSON a, EJLJSON b)
+        public static boolean cmp(EJLJSON a, EJLJSON b)
             {
-            char ans = 0;
-            ExtStack<ExtPair<Integer,ExtPair<Object,Object>>> st;
+            int ai,bi;
+            boolean ans = false;
+            ExtStack<ExtPair<Character,ExtPair<Object,Object>>> st;
                         // Integer has bitwise flags.
                         // if Integer is null, than its time for us to getsubtypes
                         // of 
@@ -88,16 +94,121 @@ public class EJLLogicalStructs
                 throw getExcpt(3);
             
             
+            ETTO:
+            {
+            ai = a.getType();
+            bi = b.getType();
+            if(ai!=bi)
+                break ETTO;
+                if(ai<3)
+                    {
+                    switch(ai)
+                        {
+                        case 0:
+                            {
+                            ans = (
+                            ((EJLJSON_Literal)a.main).subtype()
+                                    ==
+                            ((EJLJSON_Literal)b.main).subtype()
+                                    );
+                            break;
+                            }
+                        case 1:
+                            {
+                            ans=(
+            Ariphmetical.cmp(
+                ((EJLJSON_Number)a.main).getValue()
+                    ,
+                ((EJLJSON_Number)b.main).getValue()
+            )
+            ==
+            3);
+                            break;
+                            }
+                        case 2:
+                            {
+                            ans=(
+            ExtString.cmp(
+                ((EJLJSON_String)a.main).getValue()
+                    ,
+                ((EJLJSON_String)b.main).getValue()
+            )
+            ==
+            3);
+                            break;
+                            }
+                        }//end of quick end's switch
+                    
+                    break ETTO;
+                    }//end of quick end
+                
+            }
             
-            
-            return 0;
+            return ans;
             }
         
+        private typeGiver main;
+        
+        
+        public EJLJSON()
+                {
+                this.main = null;
+                }
+        
+        public int getType()
+            {
+            return this.main.type();
+            }
         
         ///////////////////////////////// subclasses
-        private static class typeGiver
+                private static class typeGiver
                     {
                     public int type(){return -1;}
+                    }
+                
+                private static class EJLJSON_Literal extends typeGiver
+                    {
+                        private int lit;
+                        @Override
+                        public int type()
+                            {
+                            return 0;
+                            }
+                        public int subtype()
+                            {
+                            return lit;
+                            }
+                        public EJLJSON_Literal()
+                            {
+                            lit = 8;
+                            }
+                        public EJLJSON_Literal(Object t)
+                            {
+                            if(t==null)
+                                lit = 8;
+                            else
+                                if(t instanceof Boolean)
+                                    lit = ((Boolean)t)?9:10;
+                                else
+                                    throw getExcpt("Bad type of Object argument.");
+                            }
+                        
+                        public EJLJSON_Literal(Boolean t)
+                            {
+                                if(t==null)
+                                lit = 8;
+                                else
+                                    lit = t?9:10;
+                            }
+                        
+                        private Boolean giveBool()
+                            {
+                            if(lit!=8)
+                            return (lit==9);
+                            else
+                                throw getExcpt("Bad subtype of EJLJSON_Literal(not boolean).");
+                            }
+                        
                     }
                 
                 private static class EJLJSON_Number extends typeGiver 
@@ -171,6 +282,9 @@ public class EJLLogicalStructs
                             {
                             return this.a.toString();
                             }
+                        
+                        
+                        
                     } // end of EJLJSON_Number 
                 
                 private static class EJLJSON_String extends typeGiver
