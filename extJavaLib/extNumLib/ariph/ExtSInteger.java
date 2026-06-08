@@ -139,13 +139,33 @@ this.sub(new ExtSInteger(a.chains()));
 }
 
 
+public void mul(ExtInteger w)
+    {
+    if(this.zero()==0) return;
+    if(w.zero()==0)
+        {
+        this.sign(0);
+        this.c = (new ExtInteger(0)).chains();
+        return;
+        }
+    super.mul(w);
+    }
+
 public void mul(ExtSInteger w)
 {
+if(this.zero()==0) return;
+if(w.zero()==0)
+    {
+    this.sign(0);
+    this.c = (new ExtInteger(0)).chains();
+    return;
+    }
 ExtInteger pr=(new ExtInteger(this.c));
 pr.mul(new ExtInteger(w.chains()));
 this.c=pr.chains();
+//if(this.zero()==0) this.sign(0);
+//else
 this.sign((this.sign()+w.sign())%2);
-if(this.zero()==0) this.sign(0);
 }
 
 

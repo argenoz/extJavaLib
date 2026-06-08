@@ -340,6 +340,7 @@ ETTO:{
                         I2=b.main().first();
                         I.mul(I2);
                         a=new ExtNum(I);
+                        
                         break;
                         }
                     case 1:{
