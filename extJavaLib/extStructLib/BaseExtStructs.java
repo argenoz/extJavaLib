@@ -11,7 +11,20 @@ import extJavaLib.extNumLib.Ariphmetical;
 
 public class BaseExtStructs
 {
-    
+    private static final String[] errs;
+    static
+        {
+        errs = new String[10];
+        errs[0]="Stack is empty.";
+        errs[1]="This is empty.";
+        errs[2]="ExtList is empty.";
+        errs[3]="Null argument is forbidden.";
+        errs[4]="Index must be ExtInteger subtype of Ariphmetical(8).";
+        errs[5]="Out of bounds.";
+        errs[6]="ExtArray is empty.";
+        errs[7]="Length must be ExtInteger subtype of Ariphmetical(8).";
+        errs[8] = "ExtArray has fixed length.";
+        }
     public static class ExtPair<A,B> extends Pair<A,B>
         {
         public ExtPair(){super();}
@@ -39,7 +52,7 @@ public class BaseExtStructs
             {
             T ans=null;
             if(this.s==null)
-                throw new ExtJavaLibBaseException("Stack is empty.");
+                throw new ExtJavaLibBaseException(errs[0],0);
             else
                 {
                 ans = s.get();
@@ -102,7 +115,7 @@ public class BaseExtStructs
                         //this.s_tail = null;
                         }
                     catch(ExtJavaLibBaseException e)
-                        {throw e;}
+                        {throw ((ExtJavaLibBaseException)e.fillInStackTrace());}
                     //return ans;
                 }
         }
@@ -152,7 +165,7 @@ public class BaseExtStructs
             {
             T ans = null;
             if(this.dh==null)
-                throw new ExtJavaLibBaseException("This is empty.");
+                throw new ExtJavaLibBaseException(errs[1],1);
             else
                 {
                 ans = this.dh.get();
@@ -169,7 +182,7 @@ public class BaseExtStructs
             {
             T ans = null;
             if(this.dh==null)
-                throw new ExtJavaLibBaseException("This is empty.");
+                throw new ExtJavaLibBaseException(errs[1],1);
             else
                 {
                 ans = this.dt.get();
@@ -221,7 +234,9 @@ public class BaseExtStructs
                 this.l = Ariphmetical.sum(this.l,Ariphmetical.E);
                 super.pushFront(t);
                 }
-            catch(ExtJavaLibBaseException e){ this.l=ll; throw e;}
+            catch(ExtJavaLibBaseException e)
+            { this.l=ll;
+            throw ((ExtJavaLibBaseException)e.fillInStackTrace());}
             }
         @Override
         public void pushBack(T t)
@@ -233,7 +248,7 @@ public class BaseExtStructs
                 this.l = Ariphmetical.sum(this.l,Ariphmetical.E);
                 super.pushBack(t);
                 }
-            catch(ExtJavaLibBaseException e){ this.l=ll; throw e;}
+            catch(ExtJavaLibBaseException e){ this.l=ll; throw ((ExtJavaLibBaseException)e.fillInStackTrace());}
             }
         
         
@@ -247,7 +262,7 @@ public class BaseExtStructs
                 ans = super.popFront();
                 this.l = Ariphmetical.sub(this.l,Ariphmetical.E);
                 }
-            catch(ExtJavaLibBaseException e) {this.l=ll; throw new ExtJavaLibBaseException("ExtList is empty.");  }
+            catch(ExtJavaLibBaseException e) {this.l=ll; throw new ExtJavaLibBaseException(errs[2],2);  }
             return ans;
             }
         
@@ -261,7 +276,7 @@ public class BaseExtStructs
                 ans = super.popBack();
                 this.l = Ariphmetical.sub(this.l,Ariphmetical.E);
                 }
-            catch(ExtJavaLibBaseException e) {this.l=ll; throw new ExtJavaLibBaseException("ExtList is empty.");  }
+            catch(ExtJavaLibBaseException e) {this.l=ll; throw new ExtJavaLibBaseException(errs[2],2);  }
             return ans;
             }
         
@@ -275,15 +290,15 @@ public class BaseExtStructs
             {
             ExtJavaLibBaseException ex;
             if(i==null)
-                ex = new ExtJavaLibBaseException("Null argument is forbidden.");
+                ex = new ExtJavaLibBaseException(errs[3],3);
             else
             if(i.type()!=8)
-                ex = new ExtJavaLibBaseException("Index must be ExtInteger subtype of Ariphmetical(8).");
+                ex = new ExtJavaLibBaseException(errs[4],4);
             else
             if(Ariphmetical.cmp(i,this.l)==1)
                 ex = null;
             else
-                ex = new ExtJavaLibBaseException("Out of bounds.");
+                ex = new ExtJavaLibBaseException(errs[5],5);
             return ex;
             }
         
@@ -294,11 +309,11 @@ public class BaseExtStructs
             ExtJavaLibBaseException ex;
             
             if(this.ifEmpty())
-                ex = new ExtJavaLibBaseException("This is empty.");
+                ex = new ExtJavaLibBaseException(errs[1],1);
             else
                 ex = ifCorrectIndex(i);
             if(ex!=null)
-                throw ex;
+                throw ((ExtJavaLibBaseException)ex.fillInStackTrace());
             else
                 {
                 t = this.dh;
@@ -319,11 +334,11 @@ public class BaseExtStructs
             ExtJavaLibBaseException ex;
             
             if(this.ifEmpty())
-                ex = new ExtJavaLibBaseException("ExtArray is empty.");
+                ex = new ExtJavaLibBaseException(errs[6],6);
             else
                 ex = ifCorrectIndex(i);
             if(ex!=null)
-                throw ex;
+                throw ((ExtJavaLibBaseException)ex.fillInStackTrace());
             else
                 {
                 t = this.dh;
@@ -356,14 +371,14 @@ public class BaseExtStructs
             ExtJavaLibBaseException ex;
             ChainDqueue<T> d;
             if(i==null)
-                ex = new ExtJavaLibBaseException("Null argument is forbidden.");
+                ex = new ExtJavaLibBaseException(errs[3],3);
             else
             if(i.type()!=8)
-                ex = new ExtJavaLibBaseException("Length must be ExtInteger subtype of Ariphmetical(8).");
+                ex = new ExtJavaLibBaseException(errs[7],7);
             else
                 ex = null;
             if(ex!=null)
-                throw ex;
+                throw ((ExtJavaLibBaseException)ex.fillInStackTrace());
             else
                 if(!i.zero())
                     {
@@ -390,25 +405,25 @@ public class BaseExtStructs
         @Override
         public void pushBack(T t)
             {
-            throw new ExtJavaLibBaseException("ExtArray has fixed length.");
+            throw new ExtJavaLibBaseException(errs[8],8);
             }
         @Deprecated
         @Override
         public void pushFront(T t)
             {
-            throw new ExtJavaLibBaseException("ExtArray has fixed length.");
+            throw new ExtJavaLibBaseException(errs[8],8);
             }
         @Deprecated
         @Override
         public T popBack()
             {
-            throw new ExtJavaLibBaseException("ExtArray has fixed length.");
+            throw new ExtJavaLibBaseException(errs[8],8);
             }
         @Deprecated
         @Override
         public T popFront()
             {
-            throw new ExtJavaLibBaseException("ExtArray has fixed length.");
+            throw new ExtJavaLibBaseException(errs[8],8);
             }
         
         
@@ -431,7 +446,7 @@ public class BaseExtStructs
             int t;
            // boolean flg = true;
             if(dim==null)
-                throw new ExtJavaLibBaseException("Null argument is forbidden.");
+                throw new ExtJavaLibBaseException(errs[3],3);
             dim_size = dim.len();
             E = Ariphmetical.E8;
             N = Ariphmetical.N8;
@@ -506,7 +521,7 @@ public class BaseExtStructs
                         j = Ariphmetical.sum(Ariphmetical.E,j);
                         }
                 }
-                catch(ExtJavaLibBaseException e){throw e;}
+                catch(ExtJavaLibBaseException e){throw ((ExtJavaLibBaseException)e.fillInStackTrace());}
                 //return ans;
                 }
             
@@ -534,7 +549,7 @@ public class BaseExtStructs
                         }
                     }
                 }
-                catch(ExtJavaLibBaseException e){throw e;}
+                catch(ExtJavaLibBaseException e){throw ((ExtJavaLibBaseException)e.fillInStackTrace());}
                 }
         
         
